@@ -1,0 +1,2971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DBMS NOTES — B.Tech Database Management Systems Portal v2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<style>
+/* =============================================
+   ROOT VARIABLES
+============================================= */
+:root {
+  --bg: #0a0a0a;
+  --bg2: #0d0d0d;
+  --bg3: #111111;
+  --glass: rgba(0,255,65,0.03);
+  --green: #00ff41;
+  --green-dim: #00cc33;
+  --cyan: #00d4ff;
+  --red: #ff0040;
+  --orange: #ff5500;
+  --pink: #ff00aa;
+  --yellow: #ffcc00;
+  --text: #d8d8d8;
+  --text-dim: #666;
+  --border: rgba(0,255,65,0.12);
+  --border-cyan: rgba(0,212,255,0.15);
+  --font: 'JetBrains Mono', 'Fira Code', monospace;
+  --glow-g: 0 0 20px rgba(0,255,65,0.45), 0 0 50px rgba(0,255,65,0.15);
+  --glow-c: 0 0 20px rgba(0,212,255,0.45), 0 0 50px rgba(0,212,255,0.15);
+  --glow-p: 0 0 20px rgba(255,0,170,0.45);
+  --glow-o: 0 0 20px rgba(255,85,0,0.45);
+}
+
+/* =============================================
+   RESET & BASE
+============================================= */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;cursor:default}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--font)}
+
+/* =============================================
+   CUSTOM SCROLLBAR
+============================================= */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:var(--green);border-radius:2px;box-shadow:0 0 6px var(--green)}
+
+/* =============================================
+   PROGRESS BAR
+============================================= */
+#progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--green),var(--cyan));box-shadow:0 0 8px var(--green);z-index:9999;width:0%;transition:width .08s linear;pointer-events:none}
+
+/* =============================================
+   MATRIX RAIN
+============================================= */
+#matrix-canvas{position:fixed;top:0;left:0;width:100%;height:100%;opacity:.07;pointer-events:none;z-index:0}
+
+/* =============================================
+   SCANLINES
+============================================= */
+.scanlines{position:fixed;inset:0;pointer-events:none;z-index:998;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,65,.012) 2px,rgba(0,255,65,.012) 4px)}
+
+/* =============================================
+   NOISE OVERLAY
+============================================= */
+.noise{position:fixed;inset:0;pointer-events:none;z-index:997;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* =============================================
+   NAVBAR
+============================================= */
+nav{position:fixed;top:0;left:0;right:0;z-index:600;display:flex;align-items:center;justify-content:space-between;padding:14px 48px;background:rgba(8,8,8,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:padding .3s}
+.nav-logo{font-size:13px;font-weight:700;color:var(--green);text-shadow:var(--glow-g);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.nav-logo-bracket{color:var(--cyan)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{color:var(--text-dim);font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:all .25s;position:relative;padding-bottom:2px}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--green);transition:width .25s;box-shadow:0 0 6px var(--green)}
+.nav-links a:hover{color:var(--green)}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-search-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-size:11px;padding:6px 18px;cursor:pointer;letter-spacing:2px;transition:all .25s;text-transform:uppercase}
+.nav-search-btn:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(0,255,65,.25)}
+
+/* =============================================
+   HERO
+============================================= */
+#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 40px 60px;z-index:1;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:55px 55px;transform:perspective(600px) rotateX(28deg) scale(1.6) translateY(8%);transform-origin:bottom center;opacity:.35;pointer-events:none}
+.hero-grid-fade{position:absolute;inset:0;background:linear-gradient(to top,var(--bg) 0%,transparent 50%);pointer-events:none}
+.hero-inner{position:relative;z-index:2;text-align:center;max-width:900px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(0,212,255,.4);color:var(--cyan);font-size:9px;letter-spacing:5px;padding:5px 18px;margin-bottom:28px;animation:borderPulse 3s ease-in-out infinite}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.2s step-end infinite;box-shadow:0 0 6px var(--green)}
+@keyframes borderPulse{0%,100%{box-shadow:0 0 6px rgba(0,212,255,.3)}50%{box-shadow:0 0 20px rgba(0,212,255,.5),0 0 40px rgba(0,212,255,.2)}}
+.hero-title{font-size:clamp(52px,9vw,108px);font-weight:700;letter-spacing:10px;line-height:1;margin-bottom:24px;color:var(--green);text-shadow:0 0 40px rgba(0,255,65,.5);animation:glitchMain 5s infinite}
+.hero-title::before,.hero-title::after{content:attr(data-text);position:absolute;top:0;left:50%;transform:translateX(-50%);width:100%}
+.hero-title{position:relative;display:inline-block}
+.hero-title::before{color:var(--cyan);animation:glitchBefore 5s infinite;clip-path:polygon(0 0,100% 0,100% 33%,0 33%)}
+.hero-title::after{color:var(--red);animation:glitchAfter 5s infinite;clip-path:polygon(0 66%,100% 66%,100% 100%,0 100%)}
+@keyframes glitchMain{0%,88%,100%{transform:translateX(0)}89%{transform:translateX(-3px)}90%{transform:translateX(3px)}91%{transform:translateX(0)}96%{transform:translateX(2px)}97%{transform:translateX(-1px)}}
+@keyframes glitchBefore{0%,88%,100%{transform:translateX(-50%);opacity:1}89%{transform:translateX(calc(-50% - 4px));opacity:.8}90%{transform:translateX(calc(-50% + 4px));opacity:.7}91%{transform:translateX(-50%);opacity:0}}
+@keyframes glitchAfter{0%,90%,100%{transform:translateX(-50%);opacity:0}91%{transform:translateX(calc(-50% + 4px));opacity:.8}93%{transform:translateX(calc(-50% - 2px));opacity:.8}94%{transform:translateX(-50%);opacity:0}}
+.hero-sub{font-size:11px;letter-spacing:4px;color:var(--cyan);margin-bottom:8px;text-transform:uppercase}
+.hero-tagline{font-size:13px;color:var(--text-dim);letter-spacing:1px;margin-bottom:40px}
+.cursor-blink{display:inline-block;color:var(--green);animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Terminal Boot */
+#boot-terminal{width:min(620px,92vw);margin:0 auto 44px;background:rgba(0,0,0,.75);border:1px solid rgba(0,255,65,.2);border-radius:3px;padding:20px 24px;text-align:left;font-size:12px;line-height:1.9;box-shadow:0 0 40px rgba(0,255,65,.08),inset 0 0 40px rgba(0,0,0,.5)}
+#boot-terminal .tline{color:var(--text-dim);opacity:0;transition:opacity .2s}
+#boot-terminal .tline.visible{opacity:1}
+#boot-terminal .tline.ok{color:var(--green)}
+#boot-terminal .tline.warn{color:var(--yellow)}
+#boot-terminal .tline.info{color:var(--cyan)}
+
+.hero-stats{display:flex;gap:48px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+.stat{text-align:center}
+.stat-num{font-size:32px;font-weight:700;color:var(--green);text-shadow:0 0 20px rgba(0,255,65,.5);display:block}
+.stat-label{font-size:9px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;display:block;margin-top:4px}
+
+.hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;font-family:var(--font);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:12px 36px;cursor:pointer;transition:all .3s;border:1px solid}
+.btn-g{color:var(--green);border-color:var(--green);background:transparent}
+.btn-g:hover{background:rgba(0,255,65,.08);box-shadow:var(--glow-g)}
+.btn-c{color:var(--cyan);border-color:var(--cyan);background:transparent}
+.btn-c:hover{background:rgba(0,212,255,.08);box-shadow:var(--glow-c)}
+
+/* =============================================
+   SECTION HEADERS
+============================================= */
+.sec-header{text-align:center;margin-bottom:60px}
+.sec-label{font-size:9px;letter-spacing:5px;color:var(--green);text-transform:uppercase;margin-bottom:12px}
+.sec-title{font-size:clamp(22px,3.5vw,36px);font-weight:700;letter-spacing:2px;color:var(--text)}
+.sec-title em{color:var(--green);font-style:normal}
+.sec-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);margin:16px auto 0}
+
+/* =============================================
+   MODULES SECTION
+============================================= */
+#modules{position:relative;z-index:1;padding:90px 48px;max-width:1480px;margin:0 auto}
+.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:24px}
+
+/* =============================================
+   MODULE CARDS
+============================================= */
+.card{position:relative;background:rgba(0,0,0,.5);border:1px solid var(--border);padding:28px;cursor:pointer;overflow:hidden;transition:all .35s cubic-bezier(.175,.885,.32,1.1);transform-style:preserve-3d;will-change:transform;opacity:0;animation:fadeUp .6s ease forwards}
+.card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.15s}.card:nth-child(3){animation-delay:.25s}.card:nth-child(4){animation-delay:.35s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top left,rgba(0,255,65,.06),transparent 70%);opacity:0;transition:opacity .35s}
+.card:hover::before{opacity:1}
+.card::after{content:'';position:absolute;top:0;right:0;border-style:solid;border-width:0 22px 22px 0;border-color:transparent transparent transparent transparent;transition:border-color .3s}
+.card.c-green:hover{border-color:rgba(0,255,65,.4);box-shadow:0 8px 40px rgba(0,255,65,.12),inset 0 0 40px rgba(0,255,65,.02);transform:translateY(-5px)}
+.card.c-green:hover::after{border-color:transparent var(--green) transparent transparent}
+.card.c-cyan:hover{border-color:rgba(0,212,255,.4);box-shadow:0 8px 40px rgba(0,212,255,.12),inset 0 0 40px rgba(0,212,255,.02);transform:translateY(-5px)}
+.card.c-cyan::before{background:radial-gradient(ellipse at top left,rgba(0,212,255,.06),transparent 70%)}
+.card.c-cyan:hover::after{border-color:transparent var(--cyan) transparent transparent}
+.card.c-pink:hover{border-color:rgba(255,0,170,.4);box-shadow:0 8px 40px rgba(255,0,170,.12);transform:translateY(-5px)}
+.card.c-pink::before{background:radial-gradient(ellipse at top left,rgba(255,0,170,.06),transparent 70%)}
+.card.c-pink:hover::after{border-color:transparent var(--pink) transparent transparent}
+.card.c-orange:hover{border-color:rgba(255,85,0,.4);box-shadow:0 8px 40px rgba(255,85,0,.12);transform:translateY(-5px)}
+.card.c-orange::before{background:radial-gradient(ellipse at top left,rgba(255,85,0,.06),transparent 70%)}
+.card.c-orange:hover::after{border-color:transparent var(--orange) transparent transparent}
+
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}
+.mod-code{font-size:10px;letter-spacing:4px;font-weight:700;text-transform:uppercase}
+.c-green .mod-code{color:var(--green)}
+.c-cyan .mod-code{color:var(--cyan)}
+.c-pink .mod-code{color:var(--pink)}
+.c-orange .mod-code{color:var(--orange)}
+.badge{font-size:8px;letter-spacing:2px;padding:3px 10px;border:1px solid;text-transform:uppercase}
+.badge.core{color:var(--green);border-color:rgba(0,255,65,.5)}
+.badge.inter{color:var(--cyan);border-color:rgba(0,212,255,.5)}
+.badge.adv{color:var(--pink);border-color:rgba(255,0,170,.5)}
+.badge.expert{color:var(--orange);border-color:rgba(255,85,0,.5)}
+
+.mod-title{font-size:19px;font-weight:700;color:#eee;margin-bottom:7px;letter-spacing:.5px}
+.mod-desc{font-size:11px;color:var(--text-dim);margin-bottom:20px;line-height:1.7}
+.topic-list{list-style:none;margin-bottom:24px}
+.topic-list li{font-size:11px;color:var(--text-dim);padding:4px 0;display:flex;align-items:center;gap:8px;cursor:pointer;transition:color .2s}
+.topic-list li:hover{color:var(--text)}
+.topic-list li::before{content:'▸';font-size:10px}
+.c-green .topic-list li::before{color:var(--green)}
+.c-cyan .topic-list li::before{color:var(--cyan)}
+.c-pink .topic-list li::before{color:var(--pink)}
+.c-orange .topic-list li::before{color:var(--orange)}
+
+.card-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,.05);padding-top:18px}
+.topic-count{font-size:11px;color:var(--text-dim)}
+.topic-count b{font-weight:700}
+.c-green .topic-count b{color:var(--green)}
+.c-cyan .topic-count b{color:var(--cyan)}
+.c-pink .topic-count b{color:var(--pink)}
+.c-orange .topic-count b{color:var(--orange)}
+.enter-btn{background:transparent;border:1px solid;font-family:var(--font);font-size:9px;letter-spacing:3px;padding:7px 22px;cursor:pointer;text-transform:uppercase;transition:all .25s}
+.enter-btn.eg{color:var(--green);border-color:rgba(0,255,65,.4)}.enter-btn.eg:hover{background:rgba(0,255,65,.1);box-shadow:0 0 12px rgba(0,255,65,.3)}
+.enter-btn.ec{color:var(--cyan);border-color:rgba(0,212,255,.4)}.enter-btn.ec:hover{background:rgba(0,212,255,.1);box-shadow:0 0 12px rgba(0,212,255,.3)}
+.enter-btn.ep{color:var(--pink);border-color:rgba(255,0,170,.4)}.enter-btn.ep:hover{background:rgba(255,0,170,.1);box-shadow:0 0 12px rgba(255,0,170,.3)}
+.enter-btn.eo{color:var(--orange);border-color:rgba(255,85,0,.4)}.enter-btn.eo:hover{background:rgba(255,85,0,.1);box-shadow:0 0 12px rgba(255,85,0,.3)}
+
+/* =============================================
+   VIEWER BACKDROP
+============================================= */
+#viewer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;display:none;backdrop-filter:blur(3px)}
+#viewer-backdrop.open{display:block}
+
+/* =============================================
+   NOTE VIEWER PANEL
+============================================= */
+#viewer{position:fixed;top:0;right:0;width:min(920px,100vw);height:100vh;background:rgba(9,9,9,.98);border-left:1px solid var(--border);z-index:800;transform:translateX(100%);transition:transform .4s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;backdrop-filter:blur(28px)}
+#viewer.open{transform:translateX(0)}
+
+.viewer-head{padding:16px 28px;border-bottom:1px solid rgba(0,255,65,.08);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:rgba(0,0,0,.6)}
+.viewer-bc{font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.viewer-bc .bc-sep{margin:0 8px;color:rgba(0,255,65,.3)}
+.viewer-bc .bc-active{color:var(--green)}
+.viewer-close{background:none;border:1px solid rgba(255,255,255,.1);color:var(--text-dim);font-size:16px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.viewer-close:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 10px rgba(255,0,64,.3)}
+
+.viewer-tabs{padding:10px 28px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid rgba(0,255,65,.06);flex-shrink:0;background:rgba(0,0,0,.4)}
+.vtab{font-family:var(--font);font-size:10px;letter-spacing:1px;padding:5px 14px;border:1px solid rgba(255,255,255,.08);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap}
+.vtab:hover{border-color:rgba(0,255,65,.3);color:var(--text)}
+.vtab.active{border-color:var(--green);color:var(--green);background:rgba(0,255,65,.05)}
+
+.viewer-body{flex:1;overflow-y:auto;padding:40px 44px}
+
+/* =============================================
+   RENDERED MARKDOWN
+============================================= */
+.md{max-width:100%;line-height:1.8;color:var(--text);font-size:14px}
+.md h1{font-size:22px;color:var(--green);border-bottom:1px solid var(--border);padding-bottom:12px;margin:2em 0 .8em;letter-spacing:1px}
+.md h2{font-size:18px;color:var(--cyan);margin:1.8em 0 .7em;letter-spacing:1px}
+.md h3{font-size:15px;color:#ddd;margin:1.5em 0 .6em}
+.md h4{font-size:13px;color:var(--yellow);margin:1.3em 0 .5em}
+.md h5{font-size:12px;color:var(--text-dim);margin:1em 0 .4em}
+.md p{margin-bottom:.9em}
+.md strong{color:var(--green);font-weight:700}
+.md em{color:var(--cyan);font-style:italic}
+.md code{font-family:var(--font);background:rgba(0,255,65,.07);border:1px solid rgba(0,255,65,.12);color:var(--green);padding:2px 7px;border-radius:2px;font-size:12.5px}
+.md pre{background:#0d1117;border:1px solid rgba(0,255,65,.12);border-radius:3px;padding:20px 22px;overflow-x:auto;margin:1.4em 0}
+.md pre code{background:none;border:none;padding:0;color:inherit;font-size:12.5px}
+.md blockquote{border-left:3px solid var(--cyan);padding:10px 18px;margin:1.4em 0;background:rgba(0,212,255,.04);color:var(--text-dim);font-style:italic}
+.md table{width:100%;border-collapse:collapse;margin:1.4em 0;font-size:12.5px;display:block;overflow-x:auto}
+.md th{background:rgba(0,255,65,.07);color:var(--green);font-weight:700;padding:10px 14px;border:1px solid rgba(0,255,65,.15);text-align:left;letter-spacing:.5px;white-space:nowrap}
+.md td{padding:8px 14px;border:1px solid rgba(255,255,255,.05);color:var(--text);vertical-align:top}
+.md tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+.md tr:hover td{background:rgba(0,255,65,.03)}
+.md ul,.md ol{padding-left:22px;margin:.7em 0}
+.md li{margin:5px 0}
+.md hr{border:none;border-top:1px solid rgba(0,255,65,.08);margin:1.8em 0}
+.md a{color:var(--cyan)}
+.md a:hover{text-decoration:underline}
+
+/* =============================================
+   SEARCH OVERLAY
+============================================= */
+#search-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:900;display:none;flex-direction:column;align-items:center;padding-top:110px;backdrop-filter:blur(8px)}
+#search-overlay.open{display:flex}
+.search-wrap{width:min(720px,92vw)}
+.search-bar{display:flex;align-items:center;background:rgba(10,10,10,.95);border:1px solid var(--green);box-shadow:var(--glow-g);padding:14px 20px;gap:12px}
+.search-icon{color:var(--green);font-size:15px;flex-shrink:0}
+#search-input{flex:1;background:transparent;border:none;outline:none;font-family:var(--font);font-size:16px;color:var(--text);caret-color:var(--green)}
+#search-input::placeholder{color:var(--text-dim)}
+.search-esc{font-size:9px;color:var(--text-dim);letter-spacing:2px;padding:3px 8px;border:1px solid rgba(255,255,255,.1);white-space:nowrap}
+.search-results{background:rgba(10,10,10,.98);border:1px solid rgba(0,255,65,.15);border-top:none;max-height:440px;overflow-y:auto}
+.s-result{padding:12px 20px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.03);display:flex;align-items:center;gap:14px;transition:background .15s}
+.s-result:hover,.s-result.focused{background:rgba(0,255,65,.06)}
+.s-mod{font-size:9px;color:var(--green);letter-spacing:2px;min-width:55px;flex-shrink:0}
+.s-topic{font-size:13px;color:var(--text)}
+.s-empty{padding:20px;text-align:center;color:var(--text-dim);font-size:12px}
+
+/* =============================================
+   FOOTER
+============================================= */
+footer{position:relative;z-index:1;padding:60px 48px 40px;border-top:1px solid var(--border);margin-top:60px;text-align:center}
+.footer-ascii{color:rgba(0,255,65,.18);font-size:9px;line-height:1.3;white-space:pre;margin-bottom:36px;overflow-x:auto;letter-spacing:1px}
+.footer-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;margin-bottom:28px}
+.f-stat{text-align:center}
+.f-val{font-size:22px;font-weight:700;color:var(--green);text-shadow:0 0 12px rgba(0,255,65,.4);display:block}
+.f-lbl{font-size:9px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;display:block;margin-top:4px}
+.footer-copy{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:1px;line-height:2}
+.footer-copy .fg{color:var(--green)}
+
+/* =============================================
+   RESPONSIVE
+============================================= */
+@media(max-width:768px){
+  nav{padding:12px 20px}
+  .nav-links{display:none}
+  #hero{padding:80px 20px 50px}
+  #modules{padding:60px 20px}
+  .module-grid{grid-template-columns:1fr}
+  #viewer{width:100vw;border-left:none}
+  .viewer-body{padding:20px 16px}
+  .hero-stats{gap:24px}
+  footer{padding:40px 20px}
+  .footer-ascii{font-size:6px}
+}
+@media(max-width:420px){
+  .hero-title{letter-spacing:4px}
+  .viewer-head{padding:12px 14px}
+  .viewer-tabs{padding:8px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- MATRIX RAIN CANVAS -->
+<canvas id="matrix-canvas"></canvas>
+
+<!-- SCANLINES & NOISE -->
+<div class="scanlines"></div>
+<div class="noise"></div>
+
+<!-- PROGRESS BAR -->
+<div id="progress"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo"><span class="nav-logo-bracket">[</span>DBMS<span class="nav-logo-bracket">]</span>&nbsp;NOTES</div>
+  <ul class="nav-links">
+    <li><a href="#hero">HOME</a></li>
+    <li><a href="#modules">MODULES</a></li>
+    <li><a href="#footer-section">SYSTEM</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-search-btn" onclick="openSearch()">⌕ SEARCH</button>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-grid-fade"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="dot"></span> ACCESS GRANTED &nbsp;// &nbsp;SESSION ACTIVE</div>
+    <div class="hero-title glitch" data-text="DBMS NOTES">DBMS NOTES</div>
+    <div class="hero-sub">B.Tech 6th Semester — Database Management Systems</div>
+    <p class="hero-tagline">ACCESS GRANTED // DBMS STUDY PORTAL v2.0<span class="cursor-blink">_</span></p>
+
+    <div id="boot-terminal">
+      <div class="tline info" id="bl-0">&gt; INITIALIZING DATABASE KERNEL...</div>
+      <div class="tline" id="bl-1">&gt; Loading module registry... <span class="ok">[ 4 MODULES FOUND ]</span></div>
+      <div class="tline" id="bl-2">&gt; Mounting note filesystem... <span class="ok">[ OK ]</span></div>
+      <div class="tline" id="bl-3">&gt; Compiling relational schemas... <span class="warn">[ WARN: 3NF violations detected — see Module 3 ]</span></div>
+      <div class="tline" id="bl-4">&gt; Starting transaction manager... <span class="ok">[ 2PL PROTOCOL ACTIVE ]</span></div>
+      <div class="tline" id="bl-5">&gt; Initializing concurrency control... <span class="ok">[ STRICT 2PL ENGAGED ]</span></div>
+      <div class="tline info" id="bl-6">&gt; SYSTEM READY — Good luck, Rishav 🎓</div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" id="sc-modules">0</span><span class="stat-label">Modules</span></div>
+      <div class="stat"><span class="stat-num" id="sc-topics">0</span><span class="stat-label">Topics</span></div>
+      <div class="stat"><span class="stat-num" id="sc-questions">0</span><span class="stat-label">Questions</span></div>
+      <div class="stat"><span class="stat-num" id="sc-uptime">00:00</span><span class="stat-label">Uptime</span></div>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#modules" class="btn btn-g">▶ ENTER MODULES</a>
+      <button class="btn btn-c" onclick="openSearch()">⌕ SEARCH TOPICS</button>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES SECTION -->
+<section id="modules">
+  <div class="sec-header">
+    <div class="sec-label">// KNOWLEDGE BASE</div>
+    <h2 class="sec-title">STUDY <em>MODULES</em></h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="module-grid" id="module-grid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer-section">
+  <pre class="footer-ascii">
+██████╗ ██████╗ ███╗   ███╗███████╗    ███╗   ██╗ ██████╗ ████████╗███████╗███████╗
+██╔══██╗██╔══██╗████╗ ████║██╔════╝    ████╗  ██║██╔═══██╗╚══██╔══╝██╔════╝██╔════╝
+██║  ██║██████╔╝██╔████╔██║███████╗    ██╔██╗ ██║██║   ██║   ██║   █████╗  ███████╗
+██║  ██║██╔══██╗██║╚██╔╝██║╚════██║    ██║╚██╗██║██║   ██║   ██║   ██╔══╝  ╚════██║
+██████╔╝██████╔╝██║ ╚═╝ ██║███████║    ██║ ╚████║╚██████╔╝   ██║   ███████╗███████║
+╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝    ╚═╝  ╚═══╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝
+  </pre>
+  <div class="footer-stats">
+    <div class="f-stat"><span class="f-val">16</span><span class="f-lbl">Topics Loaded</span></div>
+    <div class="f-stat"><span class="f-val">4</span><span class="f-lbl">Modules Active</span></div>
+    <div class="f-stat"><span class="f-val" id="uptime-footer">00:00</span><span class="f-lbl">System Uptime</span></div>
+    <div class="f-stat"><span class="f-val">100%</span><span class="f-lbl">Coverage</span></div>
+  </div>
+  <div class="footer-copy">
+    <div><span class="fg">[ DBMS PORTAL v2.0 ]</span> — B.Tech 6th Semester Study System</div>
+    <div>Author: <span class="fg">Rishav Raj</span> // Subject: <span class="fg">Database Management Systems</span></div>
+    <div style="margin-top:8px;color:rgba(0,255,65,.15)">root@dbms-portal:~$ <span style="animation:blink 1s step-end infinite;color:rgba(0,255,65,.3)">_</span></div>
+  </div>
+</footer>
+
+<!-- VIEWER BACKDROP -->
+<div id="viewer-backdrop" onclick="closeViewer()"></div>
+
+<!-- NOTE VIEWER -->
+<div id="viewer">
+  <div class="viewer-head">
+    <div class="viewer-bc" id="viewer-bc">ROOT <span class="bc-sep">›</span> <span class="bc-active">—</span></div>
+    <button class="viewer-close" onclick="closeViewer()">✕</button>
+  </div>
+  <div class="viewer-tabs" id="viewer-tabs"></div>
+  <div class="viewer-body">
+    <div class="md" id="viewer-content"></div>
+  </div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div id="search-overlay" onclick="handleSearchBackdrop(event)">
+  <div class="search-wrap">
+    <div class="search-bar">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="search-input" placeholder="Search modules, topics, concepts..." autocomplete="off">
+      <span class="search-esc">ESC</span>
+    </div>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+
+<!-- =============================================
+     MARKDOWN CONTENT — MODULE 1
+============================================= -->
+<script type="text/markdown" id="content-m1-t1">
+# 3-Schema Architecture, Database Manager & DB vs Table
+
+## 📖 Part A — 3-Schema Architecture (ANSI/SPARC)
+
+The **3-Schema Architecture** separates the database system into three distinct levels to achieve **data independence** and isolate user applications from physical storage.
+
+### The Three Levels
+
+**1. 🔵 External Level (View Level)**
+- The **highest level** of abstraction.
+- Describes how individual users or user groups see the data.
+- Each user group has a customized view called an **external schema** or **subschema**.
+- Hides parts of the data for security and simplicity.
+- Example: A bank employee sees only customer account details, not storage structure.
+
+**2. 🟡 Conceptual Level (Logical Level)**
+- The **middle level** of abstraction.
+- Describes **what data is stored** and the **relationships** among data.
+- Defined by the DBA (Database Administrator).
+- Includes entities, attributes, relationships, constraints, security info.
+- Hides physical storage but exposes logical structure.
+- Example: Tables like `Student(RollNo, Name, Marks)` are defined here.
+
+**3. 🔴 Internal Level (Physical Level)**
+- The **lowest level** of abstraction.
+- Describes **how data is physically stored** on disk.
+- Deals with storage allocation, indexing, hashing, data compression.
+- Managed by the **storage engine** of the DBMS.
+- Example: Whether data is stored as B-trees, hash files, or sequential files.
+
+### Diagram — 3-Schema Architecture
+
+```
++----------------------------------------------+
+|       EXTERNAL LEVEL (User Views)            |
+|   View 1   |   View 2   |   View 3           |
++----------------------------------------------+
+                    |
+       (External/Conceptual Mapping)
+                    ↓
++----------------------------------------------+
+|     CONCEPTUAL LEVEL (Logical Schema)        |
+|  Entities, Attributes, Relationships,        |
+|  Constraints, Security                       |
++----------------------------------------------+
+                    |
+       (Conceptual/Internal Mapping)
+                    ↓
++----------------------------------------------+
+|     INTERNAL LEVEL (Physical Schema)         |
+|  File Organization, Indexing, Hashing,       |
+|  Storage Allocation                          |
++----------------------------------------------+
+                    |
+                    ↓
+             [ Physical Database ]
+```
+
+### Data Independence
+- **Logical Data Independence:** Changes at conceptual level do not affect external level.
+- **Physical Data Independence:** Changes at internal level do not affect conceptual level.
+
+---
+
+## 📖 Part B — Functions of a Database Manager
+
+A **Database Manager (DBM)** is a software module that acts as an interface between low-level data and application programs.
+
+| Function | Description |
+|----------|-------------|
+| Interaction with File Manager | Translates DML statements into low-level file system commands |
+| Integrity Enforcement | Checks data satisfies integrity constraints (e.g., age > 0, PK unique) |
+| Security Enforcement | Ensures unauthorized users cannot access data |
+| Backup and Recovery | Manages transaction logs for rollback and recovery |
+| Concurrency Control | Manages simultaneous access using locking/timestamp protocols |
+| Query Processing | Converts high-level SQL queries into efficient execution plans |
+
+---
+
+## 📖 Part C — Database vs Table
+
+| Feature | Database | Table |
+|---------|----------|-------|
+| Definition | A collection of organized data stored together | A structured set of data in rows and columns |
+| Scope | Broader — contains many tables | A single unit within a database |
+| Components | Contains tables, views, indexes, procedures | Contains rows (records) and columns (fields) |
+| Example | `SchoolDB` (entire school database) | `Student` table with Name, RollNo, Marks |
+| Creation | `CREATE DATABASE SchoolDB;` | `CREATE TABLE Student(...);` |
+| Storage | Stored as a set of files on disk | Stored as a relation within the DB |
+| Relationship | A database holds multiple tables | A table belongs to one database |
+
+---
+
+## 🔚 Conclusion
+The 3-Schema Architecture ensures data independence, security, and abstraction across different user levels. The Database Manager is the brain of the DBMS ensuring integrity, security, recovery, and concurrency. A database is the complete organized data store, while a table is a single organized unit within it.
+</script>
+
+<script type="text/markdown" id="content-m1-t2">
+# SQL Languages — DDL, DML & DCL
+
+## 📖 Part A — Procedural vs Non-Procedural DML
+
+**DML (Data Manipulation Language)** is the language used to access and manipulate data.
+
+**🔵 Procedural DML:**
+- The user specifies **WHAT data is needed AND HOW to get it**.
+- Requires step-by-step instructions.
+- Requires knowledge of internal data structures.
+- Example: Relational Algebra.
+
+**🟡 Non-Procedural DML:**
+- The user specifies **only WHAT data is needed**, not HOW to get it.
+- The DBMS decides the best retrieval strategy.
+- Example: **SQL (Structured Query Language)**, QBE.
+
+| Feature | Procedural DML | Non-Procedural DML |
+|---------|---------------|-------------------|
+| User Specifies | What + How | Only What |
+| Complexity | More complex | Easier to use |
+| Knowledge Required | Internal data structure knowledge | No internal knowledge needed |
+| Optimization | Done by the user | Done by the DBMS |
+| Example | Relational Algebra, IMS DL/I | SQL, QBE, QUEL |
+| Flexibility | More control | Less control but more convenient |
+
+---
+
+## 📖 Part B — DDL (Data Definition Language)
+
+DDL is used to **define, modify, and delete database schema objects** (tables, views, indexes).
+
+**Commands:** `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, `RENAME`
+
+```sql
+-- Create a table
+CREATE TABLE Student (
+    RollNo INT PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL,
+    Age INT CHECK(Age > 0),
+    DeptID INT REFERENCES Department(DeptID)
+);
+
+-- Add a new column
+ALTER TABLE Student ADD COLUMN Email VARCHAR(100);
+
+-- Delete a table permanently
+DROP TABLE Student;
+
+-- Remove all rows but keep structure
+TRUNCATE TABLE Student;
+```
+
+**Key Points:**
+- DDL statements are **auto-committed** (cannot be rolled back in most DBMSs).
+- Affect the **schema** (structure), not the data.
+- Changes are reflected in the **Data Dictionary**.
+
+---
+
+## 📖 Part C — DML (Data Manipulation Language)
+
+DML is used to **insert, update, delete, and retrieve** data from database tables.
+
+**Commands:** `SELECT`, `INSERT`, `UPDATE`, `DELETE`
+
+```sql
+-- INSERT: Add new records
+INSERT INTO Student (RollNo, Name, Age) VALUES (101, 'Rishav', 21);
+
+-- SELECT: Retrieve records
+SELECT Name, Age FROM Student WHERE Age > 20 ORDER BY Name ASC;
+
+-- UPDATE: Modify existing records
+UPDATE Student SET Age = 22 WHERE RollNo = 101;
+
+-- DELETE: Remove records
+DELETE FROM Student WHERE RollNo = 101;
+```
+
+**Key Points:**
+- DML statements are **transactional** — can be rolled back.
+- Used by end users and applications.
+- SELECT is also called **DQL (Data Query Language)** in some classifications.
+
+---
+
+## 📖 Part D — DCL (Data Control Language)
+
+DCL is used to **control access** to database objects — managing permissions and security.
+
+**Commands:** `GRANT`, `REVOKE`
+
+```sql
+-- Grant SELECT and INSERT permissions to user 'Rishav'
+GRANT SELECT, INSERT ON Student TO Rishav;
+
+-- Grant all privileges on all tables
+GRANT ALL PRIVILEGES ON ALL TABLES TO admin_user;
+
+-- Revoke INSERT permission from 'Rishav'
+REVOKE INSERT ON Student FROM Rishav;
+```
+
+**Key Points:**
+- DCL manages who can perform which operations.
+- Used by DBA (Database Administrator).
+- Works with user roles and access control lists.
+
+**TCL (Transaction Control Language)** — often considered a separate category:
+- `COMMIT` — Makes changes permanent.
+- `ROLLBACK` — Undoes changes.
+- `SAVEPOINT` — Creates a point to roll back to.
+
+---
+
+## 📊 Complete SQL Language Classification
+
+| Category | Commands | Purpose |
+|----------|----------|---------|
+| DDL | CREATE, ALTER, DROP, TRUNCATE | Define/modify schema |
+| DML | INSERT, UPDATE, DELETE, SELECT | Manipulate data |
+| DCL | GRANT, REVOKE | Access control |
+| TCL | COMMIT, ROLLBACK, SAVEPOINT | Transaction control |
+
+---
+
+## 🔚 Conclusion
+SQL is a comprehensive language encompassing DDL for schema definition, DML for data manipulation, DCL for access control, and TCL for transaction management. Understanding each category and its commands is fundamental to working with any relational DBMS.
+</script>
+
+<script type="text/markdown" id="content-m1-t3">
+# DBMS vs File System — Comparison & Advantages
+
+## 📖 Part A — File System vs DBMS
+
+### Traditional File System
+A **File System** is a method of storing and retrieving data using flat files (text files, binary files). Data is organized into files and managed by the OS.
+
+**Problems with File System:**
+- **Data Redundancy:** Same data stored in multiple files → wastes space.
+- **Data Inconsistency:** Updates in one file not reflected elsewhere.
+- **Data Isolation:** Data scattered across files in different formats.
+- **Integrity Problems:** Difficult to enforce constraints (e.g., age must be positive).
+- **Atomicity Failure:** Partial updates leave data in inconsistent state.
+- **Concurrent Access Issues:** Multiple users accessing same file causes conflicts.
+- **Security Issues:** Only basic file-level permissions.
+
+---
+
+## 📊 Detailed Comparison Table
+
+| Feature | File System | DBMS |
+|---------|-------------|------|
+| Data Storage | Flat files, no structure | Structured tables with relationships |
+| Data Redundancy | High — data duplicated across files | Low — centralized, no duplication |
+| Data Inconsistency | Common — updates in one file not reflected | Avoided — single source of truth |
+| Data Sharing | Difficult — files are application-specific | Easy — multiple users access same DB |
+| Data Security | Limited — basic file permissions only | Strong — role-based access control |
+| Data Independence | Not supported | Supported (logical & physical) |
+| Query Processing | Manual — need to write programs | Automated — SQL queries |
+| Backup & Recovery | Manual and unreliable | Automatic with transaction logs |
+| Concurrent Access | Not supported or error-prone | Supported with concurrency control |
+| Data Integrity | No built-in constraints | Constraints enforced automatically |
+| Cost | Low initial cost | Higher initial cost, long-term savings |
+| Complexity | Simple for small data | Complex but powerful |
+
+---
+
+## 📖 Part B — Advantages of DBMS
+
+**1. 🔵 Reduced Data Redundancy**
+DBMS centralizes data storage, ensuring each piece of data is stored only once, reducing storage waste and redundancy.
+
+**2. 🟡 Data Consistency**
+Since data is stored in one place, updates are reflected everywhere automatically. No inconsistency across multiple files.
+
+**3. 🔴 Data Sharing**
+DBMS allows multiple users and applications to access the same data simultaneously. Concurrency control ensures no conflicts.
+
+**4. 🟢 Data Security**
+- User authentication (login/password).
+- Role-based access control (`GRANT`/`REVOKE`).
+- Encryption of sensitive data.
+- Audit trails.
+
+**5. 🟣 Data Independence**
+- **Physical Data Independence:** Changing storage structures does not affect applications.
+- **Logical Data Independence:** Changing the logical schema does not affect user views.
+
+**6. 🔶 Backup and Recovery**
+Automatic backup and recovery using transaction logs. In case of failure, data is restored through rollback and redo operations.
+
+**7. 🔷 Enforcement of Integrity Constraints**
+- Primary Key: unique identification.
+- Foreign Key: referential integrity.
+- NOT NULL, CHECK, UNIQUE constraints.
+- These ensure correctness and validity of data.
+
+**8. 🟤 Efficient Query Processing**
+Optimized query processors execute SQL efficiently. Users don't need complex programs to retrieve data.
+
+**9. Reduced Development Time**
+DBMS handles data management tasks, so developers focus on application logic.
+
+**10. Concurrent Access Control**
+Locking and timestamp protocols allow many users to access and modify data simultaneously without corruption.
+
+---
+
+## 📖 When to Use File System vs DBMS
+
+| Scenario | Recommendation |
+|----------|---------------|
+| Simple, single-user application | File System (simpler, cheaper) |
+| Large-scale, multi-user system | DBMS (essential) |
+| Data with complex relationships | DBMS |
+| Real-time transaction processing | DBMS |
+| Simple configuration storage | File System (JSON/XML) |
+| Audit, security, compliance needed | DBMS |
+
+---
+
+## 🔚 Conclusion
+DBMS is far superior to file systems for data management in organizations dealing with large volumes of data. It eliminates redundancy, ensures consistency, provides security, enables data sharing, and offers reliable backup and recovery. The higher initial cost of DBMS is justified by long-term savings in maintenance, development time, and data reliability.
+</script>
+
+<script type="text/markdown" id="content-m1-t4">
+# Data Dictionary — The Metadata Repository
+
+## 📖 Definition
+
+A **Data Dictionary** (also called a **System Catalog** or **Metadata Repository**) is a centralized repository that stores **metadata** — data about data. It contains information about the structure, definitions, relationships, and constraints of all data stored in the database.
+
+> *"A data dictionary is a directory that describes every piece of data in the database."*
+
+---
+
+## 📝 What a Data Dictionary Contains
+
+| Information Type | Description |
+|-----------------|-------------|
+| Table Names | Names of all tables/relations in the database |
+| Column Names | Names and descriptions of all columns in each table |
+| Data Types | Type of each attribute (INT, VARCHAR, DATE, etc.) |
+| Constraints | Primary keys, foreign keys, NOT NULL, UNIQUE rules |
+| User Information | List of authorized users and their access rights |
+| Relationships | How tables are related to each other (via foreign keys) |
+| Indexes | Information about indexes created for performance |
+| Views | Definitions of virtual tables (views) |
+| Storage Information | How and where data is physically stored |
+
+---
+
+## 📝 Types of Data Dictionary
+
+**1. 🔵 Active Data Dictionary:**
+- Automatically updated by the DBMS whenever schema changes are made.
+- Always in sync with the actual database.
+- Example: Oracle's internal system catalog, MySQL's `information_schema`.
+
+**2. 🟡 Passive Data Dictionary:**
+- Maintained separately and updated manually by the DBA.
+- Not automatically integrated with the DBMS.
+- Can become out of sync if not maintained properly.
+
+---
+
+## 📊 Diagram — Role of Data Dictionary
+
+```
+    +----------------+       +--------------------+
+    |   User / App   |       |   DBA (Admin)       |
+    +----------------+       +--------------------+
+            |                          |
+            ↓                          ↓
+    +--------------------------------------------+
+    |             DBMS Engine                    |
+    |   - Query Processor                        |
+    |   - Transaction Manager                    |
+    +--------------------------------------------+
+            |
+            ↓
+    +--------------------------------------------+
+    |         DATA DICTIONARY (Metadata)         |
+    |  - Table names    - Column definitions     |
+    |  - Constraints    - User access rights     |
+    |  - Indexes        - Relationships          |
+    |  - View definitions - Storage info         |
+    +--------------------------------------------+
+            |
+            ↓
+    +--------------------------------------------+
+    |            Physical Database               |
+    +--------------------------------------------+
+```
+
+---
+
+## 💡 Functions of Data Dictionary
+
+1. **Stores Metadata:** Keeps track of all schema definitions.
+2. **Supports Query Optimization:** DBMS uses it to create efficient query plans.
+3. **Maintains Data Integrity:** Constraint information is stored and enforced.
+4. **Manages Security:** User permissions and access roles are stored here.
+5. **Assists DBA:** DBA uses it to manage and understand database structure.
+6. **Supports Documentation:** Acts as reference for developers and administrators.
+
+---
+
+## 💡 Example — MySQL Information Schema
+
+In **MySQL**, the data dictionary is stored in the `information_schema` database:
+
+```sql
+-- View all tables in the current database
+SELECT TABLE_NAME, TABLE_TYPE, ENGINE
+FROM information_schema.TABLES
+WHERE TABLE_SCHEMA = 'SchoolDB';
+
+-- View all columns of a table
+SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_KEY
+FROM information_schema.COLUMNS
+WHERE TABLE_NAME = 'Student'
+AND TABLE_SCHEMA = 'SchoolDB';
+
+-- View all constraints
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE
+FROM information_schema.TABLE_CONSTRAINTS
+WHERE TABLE_NAME = 'Student';
+```
+
+---
+
+## 🔚 Conclusion
+The Data Dictionary is the backbone of any DBMS. It acts as the central metadata store that the DBMS relies on for query processing, security enforcement, constraint checking, and overall database management. Without a data dictionary, the DBMS would not know the structure, rules, or relationships of the data it manages.
+</script>
+
+<!-- MODULE 2 CONTENT -->
+<script type="text/markdown" id="content-m2-t1">
+# Physical & Logical Data Independence
+
+## 📖 Definition — Data Independence
+
+**Data Independence** is the ability to modify the schema at one level of the database system without affecting the schema at the next higher level. It is one of the most important features of DBMS and is directly linked to the **3-Schema Architecture**.
+
+---
+
+## 🔵 1. Physical Data Independence
+
+**Definition:** The ability to **modify the physical schema (internal level)** without affecting the **conceptual schema (logical level)** or the **external schema (user views)**.
+
+**What it means:**
+- Changes in how data is physically stored do NOT affect the logical description.
+- Application programs and user views remain unchanged.
+
+**Examples of changes at Physical Level:**
+- Changing storage from B-tree to Hash indexing.
+- Compressing or encrypting stored data.
+- Moving data from one disk to another.
+- Changing file organization (sequential → random access).
+- Adding or removing indexes.
+
+**Benefit:** Allows DBAs to tune database performance without changing any application programs.
+
+---
+
+## 🟡 2. Logical Data Independence
+
+**Definition:** The ability to **modify the conceptual schema (logical level)** without affecting the **external schema (user views)** or the **application programs**.
+
+**What it means:**
+- Changes in the logical structure do NOT affect existing user views or application programs.
+
+**Examples of changes at Logical Level:**
+- Adding a new attribute (column) to an existing table.
+- Splitting one table into two.
+- Adding a new entity or relationship.
+- Modifying integrity constraints.
+
+> **Note:** Logical data independence is **harder to achieve** than physical data independence because changes in the logical schema often require modification of the mapping between external and conceptual levels.
+
+---
+
+## 📊 How Mappings Preserve Independence
+
+```
++-------------------------------+
+|   EXTERNAL LEVEL (Views)      |  ← Logical Independence protects this level
++-------------------------------+
+            |
+     (External/Conceptual Mapping) ← Modified when Logical changes occur
+            |
++-------------------------------+
+|   CONCEPTUAL LEVEL (Schema)   |  ← Logical changes happen here
++-------------------------------+
+            |
+     (Conceptual/Internal Mapping) ← Modified when Physical changes occur
+            |
++-------------------------------+
+|   INTERNAL LEVEL (Storage)    |  ← Physical changes happen here
++-------------------------------+
+```
+
+---
+
+## 📊 Difference Table
+
+| Feature | Physical Data Independence | Logical Data Independence |
+|---------|--------------------------|--------------------------|
+| Level of Change | Internal (Physical) Level | Conceptual (Logical) Level |
+| Protects | Conceptual & External Levels | External Level (User Views) |
+| Difficulty | Easier to achieve | Harder to achieve |
+| Example Change | Changing indexing method | Adding a new column to a table |
+| Impact on Apps | No impact on queries or programs | Minimal impact if views maintained |
+| Achieved Via | Conceptual/Internal Mapping | External/Conceptual Mapping |
+| Goal | Improve storage without app changes | Modify schema without breaking views |
+
+---
+
+## 🔚 Conclusion
+Data independence is a key advantage of DBMS over file systems. Physical data independence allows storage optimization without touching the schema, while logical data independence allows schema evolution without breaking user applications. Together, they make database systems flexible, scalable, and maintainable.
+</script>
+
+<script type="text/markdown" id="content-m2-t2">
+# Keys — Super Key, Candidate Key, Primary Key & Alternative Key
+
+## 📖 1. Super Key
+
+**Definition:** A **Super Key** is a set of one or more attributes that can **uniquely identify** each tuple (row) in a relation. A super key may contain extra (unnecessary) attributes.
+
+**Example — `Student(RollNo, Name, Email, Phone)`:**
+- `{RollNo}` ✅
+- `{Email}` ✅
+- `{RollNo, Name}` ✅ (RollNo alone is sufficient — Name is extra)
+- `{RollNo, Email, Name}` ✅ (extra attributes included)
+
+> A super key can have redundant attributes. It is the most general form of a key.
+
+---
+
+## 📖 2. Candidate Key
+
+**Definition:** A **Candidate Key** is a **minimal super key** — a super key from which no attribute can be removed without losing the uniqueness property.
+
+**Key Properties:**
+- Every candidate key is a super key.
+- No candidate key has redundant attributes (it is irreducible/minimal).
+- A table can have **multiple candidate keys**.
+
+**Example:**
+- `{RollNo}` → Candidate Key ✅ (minimal, unique)
+- `{Email}` → Candidate Key ✅ (minimal, unique)
+- `{RollNo, Name}` → NOT a Candidate Key ❌ (Name is redundant — RollNo alone uniquely identifies)
+
+---
+
+## 📖 3. Primary Key
+
+**Definition:** A **Primary Key** is the candidate key **selected by the DBA** to uniquely identify tuples in a table.
+
+**Properties:**
+- Must be **UNIQUE** — no two rows can have the same primary key value.
+- Must be **NOT NULL** — primary key cannot have null values.
+- There is **only ONE primary key** per table.
+- Chosen from among all candidate keys.
+
+```sql
+CREATE TABLE Student (
+    RollNo INT PRIMARY KEY,        -- Not NULL, Unique
+    Name VARCHAR(50),
+    Email VARCHAR(100),
+    Phone VARCHAR(15)
+);
+```
+
+---
+
+## 📖 4. Alternative Key (Secondary Key)
+
+**Definition:** An **Alternative Key** is a candidate key that was **not selected** as the primary key. It can still uniquely identify tuples but is not the primary identifier.
+
+**Example:**
+- If `RollNo` is selected as Primary Key, then `Email` and `Phone` (if unique) are Alternative Keys.
+
+---
+
+## 📊 Hierarchy Diagram
+
+```
+        All Attributes (Super Key with all columns)
+                    |
+          Super Keys (all unique sets, may be redundant)
+                    |
+        Candidate Keys (minimal super keys — no redundancy)
+                    |
+         +----------+----------+
+         |                     |
+    Primary Key          Alternative Keys
+    (1 selected by DBA)  (remaining candidate keys)
+```
+
+---
+
+## 📝 "Primary Keys are Candidate Keys but Reverse is NOT True"
+
+**Explanation:**
+- Every Primary Key is necessarily a Candidate Key ✅ — a primary key must be minimal and unique, which are exactly the properties of a candidate key.
+- But every Candidate Key is NOT necessarily a Primary Key ❌ — since there can be multiple candidate keys, only ONE is selected as the Primary Key; the rest become Alternative Keys.
+
+```
+Student Table: RollNo | Name | Email | Phone
+
+Candidate Keys: {RollNo}, {Email}, {Phone}
+Primary Key Selected: {RollNo}
+
+→ RollNo is both a Candidate Key AND the Primary Key ✅
+→ Email is a Candidate Key but NOT the Primary Key ❌
+→ Phone is a Candidate Key but NOT the Primary Key ❌
+
+Hierarchy: Primary Key ⊂ Candidate Key ⊂ Super Key
+```
+
+---
+
+## 📖 Foreign Key
+
+**Definition:** A **Foreign Key** is an attribute in one table that references the **Primary Key** of another table. It establishes a relationship between tables and enforces **referential integrity**.
+
+```sql
+CREATE TABLE Department (
+    DeptID INT PRIMARY KEY,
+    DeptName VARCHAR(50)
+);
+
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    DeptID INT,
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+    -- DeptID in Employee references DeptID (PK) in Department
+);
+```
+
+---
+
+## 🔚 Conclusion
+Super Key → Candidate Key → Primary Key form a hierarchy where each is a more specific version of the previous. Only one candidate key is promoted to Primary Key by the DBA. The statement "Primary keys are candidate keys but reverse is not true" highlights that while all primary keys qualify as candidate keys, not all candidate keys are selected as primary keys.
+</script>
+
+<script type="text/markdown" id="content-m2-t3">
+# Entity Sets & Attribute Types in ER Model
+
+## 📖 Strong Entity Set
+
+**Definition:** A **Strong Entity Set** has a **primary key** of its own — it can be uniquely identified using its own attributes without depending on any other entity.
+
+**Properties:**
+- Has its own primary key.
+- Exists independently.
+- Represented by a **single rectangle** in ER diagram.
+
+**Examples:** `Student(RollNo, Name, Age)`, `Department(DeptID, DeptName)`
+
+---
+
+## 📖 Weak Entity Set
+
+**Definition:** A **Weak Entity Set** does **NOT have a primary key** of its own. It depends on a **strong entity (owner entity)** for identification using a **partial key (discriminator)**.
+
+**Properties:**
+- Does NOT have its own primary key.
+- Depends on an **identifying entity (owner/strong entity)** for existence.
+- Has a **partial key** (discriminator) — underlined with dashed line in ER diagram.
+- Represented by a **double rectangle** in ER diagram.
+- The identifying relationship → **double diamond** in ER diagram.
+
+**Example:** `Dependent(Name, DateOfBirth)` is a weak entity of `Employee`.
+- Identified by: `Employee.EmpID + Dependent.Name`
+
+```sql
+-- Strong Entity
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name VARCHAR(50), Salary DECIMAL
+);
+
+-- Weak Entity (depends on Employee)
+CREATE TABLE Dependent (
+    EmpID INT,
+    DepName VARCHAR(50),
+    DOB DATE,
+    PRIMARY KEY (EmpID, DepName),  -- Composite: Owner PK + Partial Key
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID) ON DELETE CASCADE
+);
+```
+
+| Feature | Strong Entity Set | Weak Entity Set |
+|---------|------------------|-----------------|
+| Primary Key | Has its own PK | No PK of its own |
+| Existence | Exists independently | Depends on owner entity |
+| ER Symbol | Single rectangle | Double rectangle |
+| Relationship | Single diamond | Double diamond |
+| Key Type | Primary Key | Partial Key (Discriminator) |
+
+---
+
+## 📖 Types of Attributes
+
+**1. 🔵 Single-Valued Attribute**
+- Holds exactly **one value** per entity.
+- Example: `RollNo`, `Age`, `EmpID`
+
+**2. 🟡 Multivalued Attribute**
+- Can hold **multiple values** for a single entity.
+- Represented by a **double ellipse** in ER diagram.
+- Example: `PhoneNumber` (home, office, mobile), `Degree` (B.Tech, M.Tech)
+- In SQL, multivalued attributes require a **separate table**.
+
+**3. 🔴 Composite Attribute**
+- Can be **divided into sub-attributes** with independent meaning.
+- Example: `Address = Street + City + State + PinCode`
+- `Name = FirstName + MiddleName + LastName`
+
+**4. 🟢 Stored Attribute**
+- Value is **physically stored** in the database.
+- Example: `DateOfBirth`, `Salary`
+
+**5. 🟣 Derived Attribute**
+- Value is **computed** from another (stored) attribute — NOT directly stored.
+- Represented by a **dashed ellipse** in ER diagram.
+- Example: `Age` derived from `DateOfBirth` and current date.
+- `TotalMarks` derived from individual subject marks.
+
+**6. 🔶 Key Attribute**
+- **Uniquely identifies** each entity in the entity set (primary key).
+- Represented by an **underlined** attribute name in ER diagram.
+- Example: `RollNo` in `Student`, `EmpID` in `Employee`
+
+---
+
+## 📊 Attribute Summary
+
+| Attribute Type | ER Diagram Symbol | Example |
+|---------------|-------------------|---------|
+| Single-Valued | Single ellipse | RollNo, Age |
+| Multivalued | Double ellipse | PhoneNumber, Email |
+| Composite | Branching ellipses | Address, Name |
+| Stored | Single ellipse | DateOfBirth, Salary |
+| Derived | Dashed ellipse | Age (from DOB) |
+| Key | Underlined in ellipse | RollNo, EmpID |
+
+---
+
+## 🔚 Conclusion
+Understanding strong vs weak entity sets is crucial for ER diagram design — weak entities model real-world dependencies like employee dependents or order items. Different attribute types (derived, composite, multivalued) model real-world complexity accurately and guide schema design decisions.
+</script>
+
+<script type="text/markdown" id="content-m2-t4">
+# Relationships, Cardinality & Specialization/Generalization
+
+## 📖 Degree of a Relationship
+
+The **Degree** refers to the **number of entity sets** participating in a relationship.
+
+| Degree | Name | Example |
+|--------|------|---------|
+| 1 | Unary (Recursive) | Employee MANAGES Employee |
+| 2 | Binary (most common) | Student ENROLLS_IN Course |
+| 3 | Ternary | Doctor PRESCRIBES Medicine TO Patient |
+
+---
+
+## 📖 Cardinality Ratios (Mapping Cardinality)
+
+**Cardinality** specifies the **maximum number of relationship instances** an entity can participate in.
+
+**1. One-to-One (1:1)**
+- One entity in A → at most ONE entity in B, and vice versa.
+- Example: `Person HAS Passport`
+```
+[Person] ——1—— HAS ——1—— [Passport]
+```
+
+**2. One-to-Many (1:N)**
+- One entity in A → MANY entities in B; each in B → ONE in A.
+- Example: `Department HAS_MANY Employees`
+```
+[Department] ——1—— HAS ——N—— [Employee]
+```
+
+**3. Many-to-One (N:1)**
+- Many in A → ONE in B.
+- Example: `Many Students BELONG_TO One Department`
+
+**4. Many-to-Many (M:N)**
+- Many in A → many in B, and vice versa.
+- Example: `Student ENROLLS_IN Course`
+```
+[Student] ——M—— ENROLLS ——N—— [Course]
+```
+
+---
+
+## 📖 Participation Constraints
+
+**Total Participation (Mandatory):** Every entity in the set must participate in the relationship (double line).
+- Example: Every Employee MUST belong to a Department.
+
+**Partial Participation (Optional):** Some entities may not participate (single line).
+- Example: Some Employees may not manage any other Employee.
+
+---
+
+## 📖 Recursive Relationship (Unary)
+
+A **Recursive Relationship** is when an entity set has a relationship **with itself**.
+
+**Example: Employee MANAGES Employee**
+
+```sql
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    ManagerID INT,  -- Self-referencing foreign key
+    FOREIGN KEY (ManagerID) REFERENCES Employee(EmpID)
+);
+```
+
+```
+        MANAGES
+          ↑↓
+      [Employee]
+      /         \
+ (Manager)   (Subordinate)
+ [Role 1]     [Role 2]
+```
+
+---
+
+## 📖 Specialization
+
+**Definition:** **Specialization** is a **top-down** approach. Takes a **general entity (superclass)** and defines **more specific sub-entities (subclasses)** based on distinguishing characteristics.
+
+**Process:**
+1. Start with a higher-level entity (superclass).
+2. Identify distinguishing features.
+3. Create specialized subclasses.
+4. Subclasses **inherit** all attributes of the superclass.
+5. Subclasses may have additional own attributes.
+
+```
+          [Person]
+          PersonID, Name, Address
+               |
+       ————————————————
+       |              |
+    [Student]      [Employee]
+    RollNo          EmpID
+    Marks           Salary
+```
+
+**Properties:**
+- **Disjoint:** A person can be EITHER a Student OR an Employee (not both).
+- **Overlapping:** A person can be BOTH a Student AND an Employee.
+
+---
+
+## 📖 Generalization
+
+**Definition:** **Generalization** is a **bottom-up** approach. Takes **multiple specific entities (subclasses)** that share common attributes and **combines them into a general superclass**.
+
+**Example:**
+- Start with: `Car(VehicleNo, Brand, NumDoors)` and `Truck(VehicleNo, Brand, Payload)`
+- Common attributes: `VehicleNo`, `Brand`
+- Generalization → Create superclass: `Vehicle(VehicleNo, Brand)`
+
+```
+     [Car]              [Truck]
+     VehicleNo           VehicleNo
+     Brand               Brand
+     NumDoors            PayloadCapacity
+          \             /
+           \           /
+           [Vehicle]    ← Superclass (Generalized)
+           VehicleNo
+           Brand
+```
+
+---
+
+## 📊 Specialization vs Generalization
+
+| Feature | Specialization | Generalization |
+|---------|---------------|----------------|
+| Approach | Top-Down | Bottom-Up |
+| Starting Point | General superclass entity | Multiple specific subclass entities |
+| Process | Divide superclass into subclasses | Combine subclasses into a superclass |
+| Direction | Superclass → Subclasses | Subclasses → Superclass |
+| Goal | Add more specific properties | Find common properties |
+| Example | Person → Student, Employee | Car, Truck → Vehicle |
+
+---
+
+## 🔚 Conclusion
+Cardinality ratios and participation constraints define the nature of relationships between entities. Recursive relationships model self-referencing real-world scenarios. Specialization and generalization are complementary design strategies that enable flexible, hierarchical ER modeling with inheritance.
+</script>
+
+<!-- MODULE 3 CONTENT -->
+<script type="text/markdown" id="content-m3-t1">
+# Query Optimization & Database Integrity Constraints
+
+## 📖 Why Query Optimization?
+
+**Query Optimization** is the process of selecting the most **efficient execution plan** for a given query. The DBMS query optimizer analyzes multiple possible execution strategies and picks the one with the **minimum cost** (time, memory, I/O).
+
+**Why it is Needed:**
+- The same query can execute in multiple ways with drastically different performance.
+- A poorly optimized query on millions of rows takes minutes; an optimized one takes milliseconds.
+- Reduces CPU usage, disk I/O, and memory consumption.
+- Users write SQL (high-level) — DBMS must convert to efficient low-level operations.
+
+---
+
+## 📝 Steps to Process a High-Level Query
+
+```
+High-Level Query (SQL)
+        |
+        ↓
+1. PARSING & TRANSLATION
+        |
+        ↓
+2. QUERY TREE / RELATIONAL ALGEBRA EXPRESSION
+        |
+        ↓
+3. QUERY OPTIMIZATION (Select best plan)
+        |
+        ↓
+4. CODE GENERATION (Execution Plan)
+        |
+        ↓
+5. QUERY EVALUATION ENGINE
+        |
+        ↓
+     RESULT
+```
+
+**Step 1 — Parsing & Translation:**
+- SQL query is scanned and parsed for syntax errors.
+- Validated against schema (table names, attribute names, data types).
+- Translated into internal form — usually a **parse tree** or relational algebra expression.
+
+**Step 2 — Query Tree / Relational Algebra:**
+- Converted into a **query tree** (relational algebra expression tree).
+- Represents operations (SELECT σ, PROJECT π, JOIN ⋈) to be performed.
+
+**Step 3 — Query Optimization:**
+- Optimizer generates multiple **equivalent execution plans**.
+- Estimates the **cost** of each plan (statistics: table size, indexes, etc.).
+- Applies **heuristic rules** (e.g., apply SELECT before JOIN to reduce tuple count).
+- Selects the plan with **minimum estimated cost**.
+
+**Step 4 — Code Generation:**
+- Selected execution plan is converted into executable code.
+
+**Step 5 — Query Evaluation:**
+- Query evaluation engine executes the plan and returns results.
+
+---
+
+## 📖 1. Entity Integrity Constraint
+
+**Rule:** The **Primary Key of a table cannot be NULL**. Every tuple must be uniquely identifiable.
+
+**Why:** If PK is NULL, the tuple cannot be uniquely identified — defeats the purpose of PK.
+
+```sql
+CREATE TABLE Student (
+    RollNo INT PRIMARY KEY,   -- Cannot be NULL
+    Name VARCHAR(50)
+);
+-- INSERT INTO Student VALUES (NULL, 'Rishav'); → ERROR!
+```
+
+---
+
+## 📖 2. Referential Integrity Constraint
+
+**Rule:** A **Foreign Key value must either match an existing Primary Key value** in the referenced table, or be NULL.
+
+**Why:** Prevents orphan records (child records with no matching parent).
+
+```sql
+CREATE TABLE Department (DeptID INT PRIMARY KEY, DeptName VARCHAR(50));
+
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    DeptID INT,
+    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
+);
+-- Cannot insert Employee with DeptID=99 if DeptID=99 doesn't exist in Department.
+```
+
+---
+
+## 📖 3. Domain Constraints
+
+**Rule:** The value of each attribute must be an **atomic value from the domain (data type)** defined for that attribute.
+
+```sql
+-- Age must be an integer, not 'twenty'
+-- Gender must be 'M' or 'F'
+CREATE TABLE Person (
+    Name VARCHAR(50),
+    Age INT,
+    Gender CHAR(1) CHECK (Gender IN ('M', 'F')),
+    Marks DECIMAL(5,2) CHECK (Marks >= 0 AND Marks <= 100)
+);
+```
+
+---
+
+## 📖 4. Key Constraints
+
+**Rule:** No two tuples can have the same value for the **key attribute(s)**. The key must be unique across all tuples.
+
+```sql
+CREATE TABLE Student (
+    RollNo INT UNIQUE NOT NULL,  -- Key constraint: unique
+    Email VARCHAR(100) UNIQUE    -- Alternative key constraint
+);
+```
+
+---
+
+## 📊 Summary of Integrity Constraints
+
+| Constraint | Rule | Violation Example |
+|-----------|------|-------------------|
+| Entity Integrity | Primary Key cannot be NULL | INSERT student with NULL RollNo |
+| Referential Integrity | FK must match existing PK or be NULL | Employee with non-existent DeptID |
+| Domain Constraint | Value must match attribute's data type/range | Age = 'twenty' instead of 20 |
+| Key Constraint | Key values must be unique | Two students with same RollNo |
+
+---
+
+## 🔚 Conclusion
+Query optimization is essential for database performance — the DBMS automatically selects the best execution plan. The four integrity constraints (entity, referential, domain, key) form the foundation of data integrity in relational databases, ensuring correctness and consistency.
+</script>
+
+<script type="text/markdown" id="content-m3-t2">
+# Relational Algebra — Operations, Joins & Numericals
+
+## 📖 What is Relational Algebra?
+
+Relational Algebra is a **procedural query language** that takes one or two relations as input and produces a new relation as output. It is the theoretical foundation for SQL.
+
+---
+
+## 📖 Unary Operations (operate on ONE relation)
+
+**1. SELECT (σ) — Selection:**
+- Filters **rows** satisfying a condition.
+- **Syntax:** σ(condition)(R)
+- Example: σ(Age > 20)(Student) → all students older than 20
+
+**2. PROJECT (π) — Projection:**
+- Selects specific **columns (attributes)**.
+- Eliminates duplicate tuples.
+- **Syntax:** π(attribute list)(R)
+- Example: π(Name, Marks)(Student) → only Name and Marks columns
+
+**3. RENAME (ρ):**
+- Renames a relation or its attributes.
+- **Syntax:** ρ(new_name)(R)
+
+---
+
+## 📖 Binary Operations (operate on TWO relations)
+
+**1. UNION (∪):**
+- Combines tuples from two union-compatible relations; removes duplicates.
+- Example: Student_CS ∪ Student_IT → all CS and IT students
+
+**2. INTERSECTION (∩):**
+- Returns tuples appearing in BOTH relations.
+
+**3. SET DIFFERENCE (−):**
+- Returns tuples in R but NOT in S.
+- R − S: students in CS but not IT
+
+**4. CARTESIAN PRODUCT (×):**
+- All combinations of tuples. If R has m tuples and S has p tuples → m×p result tuples.
+- **Problem:** Very expensive (exponential size), mostly meaningless results.
+- **Solution:** Use JOIN instead.
+
+**5. JOIN (⋈):**
+- Combines related tuples from two relations based on a condition.
+- Equivalent to: σ(condition)(R × S) but much more efficient.
+
+---
+
+## 📖 Types of Joins
+
+**Natural Join:** Combines tables on matching attribute names; removes duplicate columns.
+
+**Theta Join (θ-Join):** Uses any comparison condition (=, ≠, <, >, ≤, ≥).
+
+**Equi-Join:** Theta Join where the condition is equality (=).
+
+**Left Outer Join (⟕):** ALL tuples from LEFT table + matching from RIGHT (NULLs for non-match on right).
+
+**Right Outer Join (⟖):** ALL tuples from RIGHT table + matching from LEFT (NULLs for non-match on left).
+
+**Full Outer Join (⟗):** ALL tuples from BOTH tables (NULLs on both sides for non-matches).
+
+---
+
+## 📊 Join Comparison
+
+| Join Type | Includes from Left | Includes from Right |
+|-----------|-------------------|-------------------|
+| Inner Join | Matching only | Matching only |
+| Left Outer Join | ALL tuples | Matching only |
+| Right Outer Join | Matching only | ALL tuples |
+| Full Outer Join | ALL tuples | ALL tuples |
+
+---
+
+## 📊 Example Outer Join
+
+```
+Employee:              Department:
+EmpID Name DeptID     DeptID  DeptName
+1     Rishav 10        10     IT
+2     Raj    20        20     HR
+3     Aryan  NULL      30     Finance
+
+-- LEFT OUTER JOIN (ALL from Employee):
+EmpID | Name   | DeptID | DeptName
+  1   | Rishav |  10    | IT
+  2   | Raj    |  20    | HR
+  3   | Aryan  | NULL   | NULL   ← Aryan has no dept
+
+-- RIGHT OUTER JOIN (ALL from Department):
+EmpID | Name   | DeptID | DeptName
+  1   | Rishav |  10    | IT
+  2   | Raj    |  20    | HR
+NULL  | NULL   |  30    | Finance ← Finance has no employees
+
+-- FULL OUTER JOIN:
+EmpID | Name   | DeptID | DeptName
+  1   | Rishav |  10    | IT
+  2   | Raj    |  20    | HR
+  3   | Aryan  | NULL   | NULL
+NULL  | NULL   |  30    | Finance
+```
+
+---
+
+## 🔢 Relational Algebra Numericals
+
+**Given Relations:**
+```
+Student (RollNo, Name, Age, DeptID)
+1  Rishav  21  CS
+2  Raj     22  IT
+3  Aryan   20  CS
+4  Priya   23  ME
+
+Department (DeptID, DeptName, HOD)
+CS  Computer Sci  Dr. Sharma
+IT  Info Tech     Dr. Gupta
+ME  Mech Engg     Dr. Verma
+```
+
+**Q1: Find names of all students in CS department.**
+```
+π(Name) ( σ(DeptID = 'CS') (Student) )
+→ Result: {Rishav, Aryan}
+```
+```sql
+SELECT Name FROM Student WHERE DeptID = 'CS';
+```
+
+**Q2: Find RollNo and Name of students older than 21.**
+```
+π(RollNo, Name) ( σ(Age > 21) (Student) )
+→ Result: {(2, Raj), (4, Priya)}
+```
+```sql
+SELECT RollNo, Name FROM Student WHERE Age > 21;
+```
+
+**Q3: Find Student Names with their Department Names.**
+```
+π(Name, DeptName) ( Student ⋈(Student.DeptID = Department.DeptID) Department )
+→ Result: {(Rishav, Computer Sci), (Raj, Info Tech), (Aryan, Computer Sci), (Priya, Mech Engg)}
+```
+```sql
+SELECT s.Name, d.DeptName
+FROM Student s INNER JOIN Department d ON s.DeptID = d.DeptID;
+```
+
+---
+
+## 🔚 Conclusion
+Relational algebra provides the theoretical foundation for SQL query processing. Unary operations filter rows or select columns, while binary operations combine data from multiple relations. Understanding join types is critical for writing correct SQL queries that handle NULL-containing data.
+</script>
+
+<script type="text/markdown" id="content-m3-t3">
+# Tuple Relational Calculus, Database Models & SQL
+
+## 📖 Tuple Relational Calculus (TRC)
+
+**Definition:** TRC is a **non-procedural query language** based on mathematical logic. Queries are expressed using **tuple variables** that range over tuples of a relation.
+
+**Notation:** `{ t | P(t) }` — the set of all tuples t such that predicate P(t) is true.
+
+```
+-- Find all students with marks > 80:
+{ t | t ∈ Student ∧ t.Marks > 80 }
+
+-- Find names of students in CS department:
+{ t.Name | t ∈ Student ∧ t.DeptID = 'CS' }
+
+-- Find students who have taken at least one course:
+{ t | t ∈ Student ∧ ∃s (s ∈ Enrollment ∧ s.RollNo = t.RollNo) }
+```
+
+**Components:**
+- **Tuple variable (t):** Ranges over tuples of a relation.
+- **Predicate P(t):** A condition that must be satisfied.
+- **Existential quantifier (∃):** "There exists"
+- **Universal quantifier (∀):** "For all"
+
+---
+
+## 📖 Unsafe Relational Calculus Expression
+
+**Definition:** An expression is **unsafe** if it can generate an **infinite result** — values that do NOT come from the actual database.
+
+**Example of Unsafe Expression:**
+`{ t | ¬(t ∈ Student) }`
+→ "All tuples NOT in Student" — this is an INFINITE set!
+
+**Safe Equivalent:**
+`{ t | t ∈ AllPeople ∧ ¬(t ∈ Student) }`
+→ Bounded to a finite domain (AllPeople), so the result is finite and safe.
+
+**Rule:** An expression is safe if all values in the result are from the **domain of the expression** (finite values actually appearing in the database).
+
+---
+
+## 📖 Database Models
+
+| Model | Description | Example |
+|-------|-------------|---------|
+| Hierarchical Model | Tree structure, parent-child relationships | IBM IMS |
+| Network Model | Graph structure, many-to-many relationships | CODASYL |
+| **Relational Model** | Tables (relations) with rows and columns | MySQL, Oracle, PostgreSQL |
+| Object-Oriented Model | Data stored as objects with attributes & methods | db4o |
+| ER Model | Conceptual model using entities and relationships | Design phase |
+| NoSQL/Document Model | Flexible schema (JSON, key-value, graph) | MongoDB, Redis |
+
+---
+
+## 📖 Union Compatibility
+
+Two relations R and S are **Union Compatible** if:
+1. They have the **same number of attributes** (same degree/arity).
+2. The **domains of corresponding attributes** must be compatible.
+
+**Required for:** Union (∪), Intersection (∩), Set Difference (−).
+
+```
+R (RollNo INT, Name VARCHAR) — 2 attributes
+S (EmpID INT, EmpName VARCHAR) — 2 attributes
+→ R and S are union compatible ✅ (same degree, compatible domains)
+
+R (RollNo, Name, Marks) — 3 attributes
+S (EmpID, EmpName) — 2 attributes
+→ NOT union compatible ❌ (different degree) → R ∪ S is INVALID
+```
+
+---
+
+## 📖 SQL — Structured Query Language
+
+### SELECT with Multiple Clauses
+
+```sql
+SELECT column1, column2, aggregate_function(col3)
+FROM table1
+JOIN table2 ON table1.id = table2.id
+WHERE condition
+GROUP BY column1, column2
+HAVING group_condition
+ORDER BY column1 ASC/DESC
+LIMIT n OFFSET m;
+```
+
+### Aggregate Functions
+
+```sql
+SELECT DeptID,
+    COUNT(*) AS TotalStudents,
+    AVG(Marks) AS AvgMarks,
+    MAX(Marks) AS TopMarks,
+    MIN(Marks) AS LowestMarks,
+    SUM(Marks) AS TotalMarks
+FROM Student
+GROUP BY DeptID
+HAVING AVG(Marks) > 75;
+```
+
+### Subqueries
+
+```sql
+-- Find students with marks above average
+SELECT Name, Marks FROM Student
+WHERE Marks > (SELECT AVG(Marks) FROM Student);
+
+-- Find departments with at least one student
+SELECT DeptName FROM Department
+WHERE DeptID IN (SELECT DISTINCT DeptID FROM Student);
+
+-- Correlated subquery: students scoring max in their dept
+SELECT s1.Name, s1.DeptID, s1.Marks
+FROM Student s1
+WHERE s1.Marks = (
+    SELECT MAX(s2.Marks) FROM Student s2
+    WHERE s2.DeptID = s1.DeptID
+);
+```
+
+### Views
+
+```sql
+-- Create a view for CS department students
+CREATE VIEW CS_Students AS
+SELECT RollNo, Name, Marks
+FROM Student
+WHERE DeptID = 'CS';
+
+-- Use the view
+SELECT * FROM CS_Students WHERE Marks > 80;
+```
+
+### Indexes
+
+```sql
+-- Create an index to speed up searches on Name
+CREATE INDEX idx_name ON Student(Name);
+
+-- Unique index
+CREATE UNIQUE INDEX idx_email ON Student(Email);
+```
+
+---
+
+## 🔚 Conclusion
+TRC provides a declarative, logic-based alternative to SQL. Understanding database models (hierarchical, network, relational) shows the evolution of data management. Union compatibility and SQL mastery — including subqueries, views, and indexes — are essential for practical DBMS work.
+</script>
+
+<script type="text/markdown" id="content-m3-t4">
+# Normalization — 1NF, 2NF, 3NF, BCNF, 4NF, 5NF
+
+## 📖 What is Normalization?
+
+**Normalization** is the process of organizing a relational database to **reduce redundancy** and **improve data integrity** by decomposing tables into smaller, well-structured relations.
+
+**Goals:**
+- Eliminate data redundancy (duplicate data).
+- Eliminate insertion, deletion, and update anomalies.
+- Ensure data dependencies make sense (only store related data in a table).
+
+---
+
+## 📖 Functional Dependencies (FD)
+
+**Definition:** In relation R, an FD X → Y means if two tuples have the same value of X, they must have the same value of Y. "X functionally determines Y."
+
+**Example (StudentCourse):**
+```
+StudentID → StudentName           (partial)
+CourseID → CourseName, Instructor (partial)
+Instructor → InstructorPhone      (transitive)
+{StudentID, CourseID} → Grade     (full FD)
+```
+
+---
+
+## 🔵 1NF — First Normal Form
+
+**Rule:** A relation is in **1NF** if:
+1. All attributes contain **atomic (indivisible) values** — no multivalued or composite attributes.
+2. All values in a column are of the same domain.
+3. Each row is unique (has a primary key).
+
+**Violation Example (NOT in 1NF):**
+```
+Student(RollNo, Name, PhoneNumbers)
+1  Rishav  [9876543210, 7654321098]  ← Multiple values in one cell!
+```
+
+**Fix:**
+```
+Student(RollNo, Name, PhoneNumber)
+1  Rishav  9876543210
+1  Rishav  7654321098
+```
+
+**1NF eliminates:** Repeating groups, non-atomic (multi-valued) cells.
+
+---
+
+## 🟡 2NF — Second Normal Form
+
+**Rule:** A relation is in **2NF** if:
+1. It is in **1NF**.
+2. Every non-prime attribute is **fully functionally dependent** on the entire primary key.
+3. No **partial dependencies** exist.
+
+**Applicable when:** Primary key is composite.
+
+**Violation Example (in 1NF, NOT in 2NF):**
+```
+StudentCourse(StudentID, CourseID, StudentName, CourseName, Grade)
+PK: {StudentID, CourseID}
+
+StudentID → StudentName  (PARTIAL — depends on only part of PK) ❌
+CourseID → CourseName    (PARTIAL — depends on only part of PK) ❌
+{StudentID, CourseID} → Grade  (FULL — depends on entire PK) ✅
+```
+
+**Fix — Decompose to remove partial dependencies:**
+```
+Student(StudentID, StudentName)         ← StudentID is PK
+Course(CourseID, CourseName)            ← CourseID is PK
+Enrollment(StudentID, CourseID, Grade)  ← {StudentID, CourseID} is composite PK
+```
+
+**2NF eliminates:** Partial functional dependencies.
+
+---
+
+## 🔴 3NF — Third Normal Form
+
+**Rule:** A relation is in **3NF** if:
+1. It is in **2NF**.
+2. No **transitive dependencies** — no non-prime attribute depends on another non-prime attribute.
+
+**Violation Example (in 2NF, NOT in 3NF):**
+```
+Course(CourseID, CourseName, Instructor, InstructorPhone)
+PK: CourseID
+
+CourseID → Instructor         (direct) ✅
+Instructor → InstructorPhone  (TRANSITIVE — non-prime → non-prime) ❌
+→ CourseID → InstructorPhone is a transitive dependency!
+```
+
+**Fix:**
+```
+Course(CourseID, CourseName, Instructor)
+Instructor_Info(Instructor, InstructorPhone)
+```
+
+**3NF eliminates:** Transitive functional dependencies.
+
+---
+
+## 🟢 BCNF — Boyce-Codd Normal Form (Stricter than 3NF)
+
+**Rule:** A relation is in **BCNF** if:
+1. It is in **3NF**.
+2. For every non-trivial FD X → Y, **X must be a superkey**.
+3. The left-hand side of every FD must be a candidate key.
+
+**Violation Example (in 3NF, NOT in BCNF):**
+```
+CourseTeacher(StudentID, CourseID, Instructor)
+FDs:
+{StudentID, CourseID} → Instructor  (composite PK)
+Instructor → CourseID               ← Instructor determines CourseID but Instructor is NOT a superkey!
+```
+
+**Fix:**
+```
+InstructorCourse(Instructor, CourseID)
+StudentInstructor(StudentID, Instructor)
+```
+
+**BCNF eliminates:** All FD-based redundancy (stricter than 3NF, but may not preserve all FDs).
+
+---
+
+## 🟣 4NF — Fourth Normal Form
+
+**Rule:** A relation is in **4NF** if:
+1. It is in **BCNF**.
+2. No **non-trivial multi-valued dependencies (MVDs)** except where the left side is a superkey.
+
+**Multi-Valued Dependency (MVD):** X →→ Y means for each X value, there's an independent set of Y values.
+
+**Violation Example:**
+```
+Employee(EmpID, Skill, Project)
+EmpID →→ Skill   (Employee has multiple skills — independent of projects)
+EmpID →→ Project (Employee works on multiple projects — independent of skills)
+→ Causes unnecessary cross-product of skills and projects
+```
+
+**Fix:**
+```
+EmpSkill(EmpID, Skill)
+EmpProject(EmpID, Project)
+```
+
+**4NF eliminates:** Multi-valued dependencies (MVDs).
+
+---
+
+## 🔶 5NF — Fifth Normal Form (PJNF)
+
+**Rule:** A relation is in **5NF** if:
+1. It is in **4NF**.
+2. Every **join dependency** in the relation is implied by the candidate keys.
+3. Cannot be decomposed further without losing information.
+
+**5NF eliminates:** Redundancy due to join dependencies.
+
+```
+Supplier-Part-Project(SupplierID, PartID, ProjectID)
+If join dependency not explained by candidate key → violate 5NF
+
+Decompose to:
+SupplierPart(SupplierID, PartID)
+SupplierProject(SupplierID, ProjectID)
+PartProject(PartID, ProjectID)
+```
+
+---
+
+## 📊 Complete Normalization Summary
+
+| Normal Form | Condition | Eliminates |
+|-------------|-----------|------------|
+| 1NF | All atomic values, no repeating groups | Non-atomic/multi-valued cells |
+| 2NF | 1NF + No partial FDs | Partial functional dependencies |
+| 3NF | 2NF + No transitive FDs | Transitive functional dependencies |
+| BCNF | 3NF + Every FD determinant is a superkey | Remaining FD-based redundancy |
+| 4NF | BCNF + No non-trivial MVDs | Multi-valued dependencies |
+| 5NF | 4NF + No non-trivial join dependencies | Join-based redundancy |
+
+---
+
+## 📊 Normalization Flowchart
+
+```
+UNNORMALIZED RELATION
+        |
+     [1NF] — Remove non-atomic values, repeating groups
+        |
+     [2NF] — Remove partial dependencies (on composite PK)
+        |
+     [3NF] — Remove transitive dependencies
+        |
+    [BCNF] — Every FD determinant must be a superkey
+        |
+     [4NF] — Remove multi-valued dependencies
+        |
+     [5NF] — Remove join dependencies
+        |
+  FULLY NORMALIZED RELATION
+```
+
+---
+
+## 🔚 Conclusion
+Normalization is a systematic process of refining database design to eliminate redundancy and anomalies. Each normal form addresses progressively more subtle forms of dependency. In practice, most databases are normalized to **3NF or BCNF**, providing the best balance between normalization benefits and query performance.
+</script>
+
+<!-- MODULE 4 CONTENT -->
+<script type="text/markdown" id="content-m4-t1">
+# Serializability, Schedules & Precedence Graph
+
+## 📖 What is a Schedule?
+
+A **Schedule** is a sequence of operations (Read/Write) from multiple transactions executed in some interleaved order.
+
+**Types of Schedules:**
+- **Serial Schedule:** Transactions execute one after another — no interleaving. Always correct but reduces concurrency.
+- **Non-Serial Schedule:** Transactions are interleaved — may or may not be correct.
+- **Serializable Schedule:** A non-serial schedule that is equivalent to some serial schedule — correct.
+
+---
+
+## 📖 Conflict Serializability
+
+**Conflict:** Two operations conflict if:
+1. They belong to **different transactions**.
+2. They operate on the **same data item**.
+3. At least **one of them is a WRITE**.
+
+**Types of Conflicts:**
+- **Read-Write (RW):** Ti reads X, Tj writes X (or vice versa).
+- **Write-Write (WW):** Both Ti and Tj write to X.
+
+> Note: Read-Read is NOT a conflict — two reads don't interfere.
+
+---
+
+## 📊 Precedence Graph Method
+
+**Steps:**
+1. Identify all **conflicting operations** between transactions.
+2. Draw a **Precedence Graph**: Node for each transaction Ti. Edge Ti → Tj if Ti's operation conflicts with and **precedes** Tj's operation.
+3. If graph has **NO cycle** → Schedule is **Conflict Serializable** ✅
+4. If graph has a **cycle** → Schedule is **NOT Conflict Serializable** ❌
+
+---
+
+## 🔢 Numerical 1 (CONFLICT SERIALIZABLE ✅)
+
+**Schedule S:**
+```
+T1: R(A), W(A),         R(B), W(B)
+T2:         R(A), W(A),       R(B), W(B)
+
+Interleaved:
+Step 1: T1: R(A)
+Step 2: T1: W(A)
+Step 3: T2: R(A)
+Step 4: T2: W(A)
+Step 5: T1: R(B)
+Step 6: T1: W(B)
+Step 7: T2: R(B)
+Step 8: T2: W(B)
+```
+
+**Find Conflicts:**
+| Conflict Pair | Reason | Edge |
+|--------------|--------|------|
+| W1(A) before R2(A) | Write-Read on A | T1 → T2 |
+| W1(A) before W2(A) | Write-Write on A | T1 → T2 |
+| W1(B) before R2(B) | Write-Read on B | T1 → T2 |
+| W1(B) before W2(B) | Write-Write on B | T1 → T2 |
+
+**Precedence Graph:** `T1 ──→ T2` (No cycle) → **CONFLICT SERIALIZABLE ✅**
+**Equivalent serial schedule:** T1 → T2
+
+---
+
+## 🔢 Numerical 2 (NOT CONFLICT SERIALIZABLE ❌)
+
+**Schedule S:**
+```
+T1: R(A),       W(A)
+T2:       R(A),       W(A)
+
+Interleaved: R1(A), R2(A), W1(A), W2(A)
+```
+
+**Find Conflicts:**
+| Conflict Pair | Edge |
+|--------------|------|
+| R1(A) before W2(A) | T1 → T2 |
+| R2(A) before W1(A) | T2 → T1 |
+
+**Precedence Graph:** `T1 ⇄ T2` (CYCLE EXISTS T1→T2→T1) → **NOT SERIALIZABLE ❌**
+
+---
+
+## 🔢 Numerical 3 (Classic Exam Problem — SERIALIZABLE ✅)
+
+**Schedule S:**
+```
+Operations in order:
+1. T1: R(X)
+2. T1: R(Y)
+3. T2: R(Y)
+4. T1: W(X)
+5. T2: W(Y)
+6. T3: R(X)
+7. T3: W(X)
+8. T3: W(Y)
+```
+
+**Find Conflicts:**
+| Operations | Item | Conflict Type | Edge |
+|-----------|------|--------------|------|
+| W1(X) before R3(X) | X | Write-Read | T1 → T3 |
+| W1(X) before W3(X) | X | Write-Write | T1 → T3 |
+| R2(Y) before W3(Y) | Y | Read-Write | T2 → T3 |
+| W2(Y) before W3(Y) | Y | Write-Write | T2 → T3 |
+
+**Precedence Graph:** T1 → T3, T2 → T3 (No cycle) → **SERIALIZABLE ✅**
+**Equivalent serial schedules:** T1→T2→T3 or T2→T1→T3
+
+---
+
+## 📖 View Serializability
+
+A schedule S is **View Serializable** if it is view equivalent to some serial schedule.
+
+**Three conditions for View Equivalence (S1 ≡v S2):**
+1. **Initial Read:** If Ti reads initial value of X in S1, Ti must read initial value of X in S2.
+2. **Updated Read:** If Ti reads a value written by Tj in S1, the same must hold in S2.
+3. **Final Write:** If Ti does the final write on X in S1, Ti must do the final write on X in S2.
+
+> **Key:** Every conflict serializable schedule is view serializable. But NOT vice versa.
+
+---
+
+## 🔚 Conclusion
+Serializability is the correctness criterion for concurrent execution. The precedence graph method tests for conflict serializability efficiently — no cycle means the schedule is safe. Practicing numerical problems with the precedence graph is essential for exams.
+</script>
+
+<script type="text/markdown" id="content-m4-t2">
+# Two Phase Locking (2PL) Protocol
+
+## 📖 What is 2PL?
+
+**Two Phase Locking (2PL)** is a concurrency control protocol that ensures **conflict serializability** by requiring all lock acquisitions and releases to follow a strict two-phase discipline.
+
+**Two Phases:**
+
+**Phase 1 — Growing Phase:**
+- Transaction can **acquire locks** (shared S or exclusive X).
+- Transaction **cannot release** any lock.
+- Accumulates all needed locks.
+
+**Phase 2 — Shrinking Phase:**
+- Transaction can **release locks**.
+- Transaction **cannot acquire** any new lock.
+- Once the first lock is released, no new lock can be acquired.
+
+```
+Locks Held
+    ↑
+    |        *  ← Lock Point (maximum locks held)
+    |      *   *
+    |    *       *
+    |  *           *
+    +───────────────────→ Time
+    |←Growing→|←Shrinking→|
+         Phase       Phase
+```
+
+---
+
+## 📖 How 2PL Guarantees Serializability
+
+**Theorem:** A schedule produced by transactions following 2PL is always **conflict serializable**.
+
+**Proof (intuition):**
+- The **lock point** = moment a transaction acquires its last lock (end of growing phase).
+- Serial order of transactions is determined by the order of their lock points.
+- Since no transaction can acquire a lock after releasing one, the conflict ordering is consistent with the serial order.
+- This ensures a **cycle-free precedence graph** → conflict serializable.
+
+---
+
+## 📖 Variants of 2PL
+
+**1. Basic 2PL:**
+- Follows two phases as described.
+- Does NOT prevent cascading rollbacks.
+
+**2. Strict 2PL:**
+- All **exclusive (write) locks** are held until the transaction **commits or aborts**.
+- Prevents cascading rollbacks and dirty reads.
+- **Most commonly used in practice.**
+
+**3. Rigorous 2PL:**
+- ALL locks (shared AND exclusive) held until commit/abort.
+- Strictest form — ensures recoverability, prevents all anomalies.
+
+**4. Conservative 2PL (Static 2PL):**
+- Transaction acquires ALL required locks **before it starts execution**.
+- Prevents deadlocks but reduces concurrency.
+
+---
+
+## 📖 Locking vs Timestamp Protocols
+
+| Feature | Locking (2PL) | Timestamp Protocol |
+|---------|--------------|-------------------|
+| Basic Mechanism | Acquire locks on data | Each transaction gets unique timestamp |
+| Deadlock Possible? | YES — transactions can wait | NO — no waiting, transactions rolled back |
+| Concurrency | Moderate | Higher (no blocking) |
+| Conflict Resolution | Block (wait for lock release) | Abort and restart younger transaction |
+| Serializability | Conflict serializable | Timestamp-order serializable |
+| Overhead | Lock table management | Timestamp comparison per operation |
+
+---
+
+## 📖 Multi-Version 2PL (MV-2PL)
+
+The DBMS maintains **multiple versions** of each data item:
+- Each write creates a **new version** with timestamp.
+- Read operations access older versions — no blocking.
+- **Read-only transactions never block** — they always find an appropriate version.
+- Update transactions still use 2PL among themselves.
+
+**Advantage:** Dramatically improves concurrency in read-heavy workloads.
+
+---
+
+## 📖 Concurrency Anomalies
+
+**1. Dirty Read:**
+- T2 reads a value written by T1, but T1 has NOT yet committed.
+- If T1 aborts, T2 has read invalid (dirty) data.
+```
+T1: Write(X=50)
+T2:         Read(X)  ← reads dirty X=50!
+T1:             ABORT ← T1 rolls back, T2 has wrong X
+```
+
+**2. Non-Repeatable Read:**
+- T1 reads X twice; T2 modifies X between T1's two reads → T1 gets different values.
+```
+T1: Read(X)=50
+T2:          Write(X=80), COMMIT
+T1:                  Read(X)=80  ← DIFFERENT value, same transaction!
+```
+
+**3. Lost Update:**
+- Both T1 and T2 read X, modify it, write it back.
+- T2's write overwrites T1's → T1's update is lost.
+```
+T1: Read(X)=10,        Write(X=15)
+T2:          Read(X)=10,        Write(X=20) ← T1's update lost!
+```
+
+**4. Phantom Read:**
+- T1 queries a set of rows; T2 inserts matching rows; T1 re-queries → new rows appear.
+
+---
+
+## 🔚 Conclusion
+2PL is the most widely used concurrency control protocol guaranteeing serializability. Strict 2PL is the industry standard — it prevents cascading rollbacks and dirty reads. Timestamp protocols offer deadlock-free execution as an alternative. Multi-version 2PL is the basis for modern MVCC used in PostgreSQL, Oracle, and MySQL.
+</script>
+
+<script type="text/markdown" id="content-m4-t3">
+# ACID Properties, Recovery & Deadlock Handling
+
+## 📖 ACID Properties
+
+**ACID** stands for: **Atomicity, Consistency, Isolation, Durability**
+
+**1. 🔵 Atomicity:**
+- A transaction is treated as a single, **indivisible unit**.
+- Either ALL operations complete, or NONE are applied.
+- If any operation fails → entire transaction is rolled back.
+- Ensured by: **Recovery Manager (UNDO)**.
+- Example: Bank transfer — either both debit AND credit happen, or neither.
+
+**2. 🟡 Consistency:**
+- Transaction takes the database from one **consistent state** to another consistent state.
+- All integrity constraints satisfied before AND after the transaction.
+- Ensured by: Application logic + integrity constraints.
+- Example: Total money in bank must remain constant after a transfer.
+
+**3. 🔴 Isolation:**
+- Concurrent transactions execute as if running in isolation.
+- Intermediate results of one transaction NOT visible to others.
+- Ensured by: **Concurrency Control (locking, timestamping)**.
+- Example: During a transfer, another transaction doesn't see the partially transferred amount.
+
+**4. 🟢 Durability:**
+- Once committed, changes are **permanent** — even if system crashes immediately after.
+- Ensured by: **Recovery Manager (REDO)** using write-ahead logging.
+- Example: After COMMIT, the bank transfer is permanent even if server crashes next second.
+
+---
+
+## 📖 Transaction States
+
+```
+              BEGIN
+                |
+                ↓
+           [ACTIVE] ─────────────────────────────────┐
+                |                                     |
+         (Execution)                         (Error/Abort request)
+                |                                     |
+                ↓                                     ↓
+     [PARTIALLY COMMITTED]                         [FAILED]
+                |                                     |
+         (Commit decision)                            ↓
+                |                              [ABORTED]
+                ↓                           (Rollback done,
+          [COMMITTED]                        DB restored)
+         (Changes permanent)
+```
+
+---
+
+## 📖 Log-Based Recovery
+
+A **Log (WAL — Write-Ahead Logging)** is maintained on stable storage. **Before any DB change, the change is first recorded in the log.**
+
+**Log Record contains:** Ti ID, Data item X, Old value, New value, Type (START/COMMIT/ABORT)
+
+### a. Immediate Update (Undo Logging)
+- Changes written to DB **immediately** (before commit).
+- Log records old value (before image) so we can UNDO if needed.
+- On crash: UNDO uncommitted transactions; REDO already committed ones if needed.
+
+```
+T1 Transfers ₹500 from A (₹1000) to B (₹500):
+
+LOG (written before DB changes):
+1. <T1, START>
+2. <T1, A, 1000, 500>  ← old=1000, new=500
+3. DB: A = 500 (immediate write)
+4. <T1, B, 500, 1000>  ← old=500, new=1000
+5. DB: B = 1000 (immediate write)
+6. <T1, COMMIT>
+
+Crash before step 6: UNDO T1 → restore A=1000, B=500
+Crash after step 6: T1 committed → no action needed
+```
+
+### b. Deferred Update (Redo Logging)
+- Changes **NOT written to DB until COMMIT**.
+- If transaction aborts → just discard log records (no UNDO needed).
+- On crash after commit → **REDO** from log records.
+
+```
+T1 same transfer:
+
+LOG (DB NOT updated yet):
+1. <T1, START>
+2. <T1, A, 500>   ← new value only (deferred)
+3. <T1, B, 1000>  ← new value only (deferred)
+4. <T1, COMMIT>   ← NOW write to DB
+5. DB: A=500, B=1000
+
+Crash before step 4: T1 not committed → ignore log → DB unchanged ✅
+Crash after step 4, before step 5: REDO → write A=500, B=1000
+```
+
+| Feature | Immediate Update | Deferred Update |
+|---------|-----------------|-----------------|
+| When DB Updated | During transaction | Only after COMMIT |
+| On Abort | UNDO using old values | Discard log (no UNDO) |
+| On Commit + Crash | No REDO needed | REDO needed |
+| Complexity | Higher (UNDO logic) | Simpler |
+
+---
+
+## 📖 Checkpoints
+
+**Checkpoint** = a point where DBMS flushes all modified buffers to disk and records `<CHECKPOINT>` log record.
+
+**Without Checkpoint:** Scan entire log from beginning on crash → very slow.
+**With Checkpoint:** Only scan log from last checkpoint → much faster.
+
+**Recovery Using Checkpoints:**
+1. Start from most recent `<CHECKPOINT>` record.
+2. REDO all committed transactions after checkpoint.
+3. UNDO all active (uncommitted) transactions after checkpoint.
+
+---
+
+## 📖 Deadlock
+
+**Definition:** Two or more transactions **waiting for each other** to release locks, and none can proceed.
+
+```
+T1 holds lock on A, waits for lock on B
+T2 holds lock on B, waits for lock on A
+→ Neither can proceed → DEADLOCK
+```
+
+**Coffman Conditions (all four must hold):**
+1. **Mutual Exclusion:** At least one resource must be non-sharable.
+2. **Hold & Wait:** Transaction holds resources while waiting for more.
+3. **No Preemption:** Locks cannot be forcibly taken.
+4. **Circular Wait:** Circular chain of transactions waiting.
+
+**Handling:**
+- **Prevention:** Conservative 2PL, Wait-Die, Wound-Wait.
+- **Detection:** Wait-For Graph (cycle = deadlock → abort one transaction).
+- **Avoidance:** Banker's algorithm.
+
+---
+
+## 📖 Wait-Die & Wound-Wait Protocols
+
+Both use timestamps (older transaction = smaller TS).
+
+**Wait-Die (Non-Preemptive):**
+- Ti requests lock held by Tj:
+  - Ti **older** (TS(Ti) < TS(Tj)) → Ti **WAITS**
+  - Ti **younger** (TS(Ti) > TS(Tj)) → Ti **DIES** (aborts, restarts with same TS)
+
+**Wound-Wait (Preemptive):**
+- Ti requests lock held by Tj:
+  - Ti **older** → Ti **WOUNDS** Tj (Tj aborts, Ti gets lock)
+  - Ti **younger** → Ti **WAITS**
+
+| Feature | Wait-Die | Wound-Wait |
+|---------|----------|-----------|
+| Older Ti, Younger Tj's lock | Ti WAITS | Ti WOUNDS Tj (Tj aborts) |
+| Younger Ti, Older Tj's lock | Ti DIES | Ti WAITS |
+| Type | Non-preemptive | Preemptive |
+
+---
+
+## 🔚 Conclusion
+ACID properties define correctness requirements for transactions. Log-based recovery with WAL ensures database consistency after crashes. Checkpoints improve recovery performance. Deadlock prevention protocols (Wait-Die, Wound-Wait) avoid circular waits using timestamps.
+</script>
+
+<script type="text/markdown" id="content-m4-t4">
+# Optimistic Concurrency Control (OCC)
+
+## 📖 What is Optimistic Concurrency Control?
+
+**Optimistic Concurrency Control (OCC)** — also called **Validation-Based Protocol** — is based on the assumption that **conflicts between transactions are rare**. Transactions run freely without locks and conflicts are checked only at commit time.
+
+**Philosophy:**
+- **Pessimistic CC (2PL/Timestamps):** "Conflicts will happen — prevent them proactively."
+- **Optimistic CC:** "Conflicts are rare — let transactions run freely, validate at the end."
+
+**Why Use OCC?**
+- In read-heavy, low-conflict environments, locking wastes time.
+- Eliminates blocking and deadlocks during execution.
+- Better performance in read-heavy workloads (reporting, analytics).
+
+---
+
+## 📖 Three Phases of OCC
+
+### Phase 1 — Read Phase
+
+- Transaction **executes completely**: reads from DB, performs computations.
+- **All WRITE operations are performed on LOCAL COPIES (private workspace)** — NOT on the actual database.
+- Transaction maintains:
+  - **Read Set RS(Ti):** All data items read by Ti.
+  - **Write Set WS(Ti):** All data items written by Ti (in private copy).
+- No locks acquired; no interference with other transactions.
+- This phase can be long — transaction does all its work here.
+
+### Phase 2 — Validation Phase
+
+- When ready to commit, transaction enters **critical validation phase**.
+- System checks whether execution was serializable — no conflicts with other committed transactions.
+- Each Ti is assigned a **timestamp** at the START of its validation phase.
+
+**Validation Test:** For each previously validated transaction Tj (with TS(Tj) < TS(Ti)), ONE of the following must hold:
+1. Tj completes its write phase **before** Ti starts its read phase.
+2. WS(Tj) ∩ RS(Ti) = ∅ AND Tj completes write phase before Ti starts write phase.
+3. WS(Tj) ∩ RS(Ti) = ∅ AND WS(Tj) ∩ WS(Ti) = ∅ AND Tj completes read phase before Ti.
+
+- Validation **passes** → Ti proceeds to Write Phase.
+- Validation **fails** → Ti is **aborted and restarted** from Read Phase.
+
+### Phase 3 — Write Phase
+
+- If validation passes: **local changes are written to the actual database**.
+- Private workspace values are copied to the real database.
+- Transaction **commits**.
+- If validation failed: no write phase — transaction restarts.
+
+---
+
+## 📊 OCC Phase Diagram
+
+```
+Start
+  |
+  ↓
+┌─────────────────────────┐
+│       READ PHASE         │  → Read from DB + compute
+│   (No locks needed)      │  → Write to private/local copy
+│   RS(Ti), WS(Ti) built   │  ← Can be long
+└─────────────────────────┘
+              |
+              ↓
+┌─────────────────────────┐
+│    VALIDATION PHASE      │  → Check conflicts with
+│    (Critical section)    │    committed transactions
+│    Assign TS(Ti)         │
+└─────────────────────────┘
+           /        \
+        PASS          FAIL
+          |             |
+          ↓             ↓
+    ┌──────────┐   ABORT & RESTART
+    │  WRITE   │   (back to Read Phase)
+    │  PHASE   │
+    │  COMMIT  │  → Write private copies to DB
+    └──────────┘
+```
+
+---
+
+## 📖 Advantages of OCC
+
+- **No deadlocks** — no locking during execution.
+- **No blocking** — transactions don't wait for each other.
+- Better performance in **read-heavy, low-conflict** workloads.
+- Transactions always make progress during read phase.
+- Suitable for distributed and in-memory databases.
+
+---
+
+## 📖 Disadvantages of OCC
+
+- **Starvation possible:** Transaction may keep aborting if conflicts repeatedly occur.
+- **Poor performance in high-conflict** workloads — frequent rollbacks negate the benefit.
+- Validation phase is a serial critical section — can become a bottleneck.
+- All work done in read phase is wasted if validation fails (must redo from scratch).
+- Not suitable for long transactions in high-write environments.
+
+---
+
+## 📊 OCC vs 2PL vs Timestamp
+
+| Feature | OCC (Optimistic) | Locking (2PL) | Timestamp Protocol |
+|---------|-----------------|--------------|-------------------|
+| Conflict Assumption | Rare | Common | Common |
+| Blocking | No | Yes (waiting for locks) | No (abort instead) |
+| Deadlock | No | Yes | No |
+| Wasted Work | On conflict (redo read phase) | On deadlock (rollback) | On conflict (rollback) |
+| Best For | Low-conflict, read-heavy | High-conflict, write-heavy | Mixed workloads |
+| Overhead | Validation phase | Lock management | Timestamp management |
+
+---
+
+## 📖 Quick Revision Card — Transaction Processing
+
+| Topic | Key Point |
+|-------|-----------|
+| 2PL | Growing: acquire locks. Shrinking: release locks. |
+| Strict 2PL | Exclusive locks held until commit. Prevents cascading rollback. |
+| Timestamp Protocol | No deadlocks. Abort if timestamp order violated. |
+| Wait-Die | Older waits, younger dies. |
+| Wound-Wait | Older wounds (preempts) younger, younger waits. |
+| ACID | Atomicity, Consistency, Isolation, Durability. |
+| Deferred Update | DB updated only after commit. REDO on recovery. No UNDO. |
+| Immediate Update | DB updated during execution. UNDO (and possibly REDO) needed. |
+| Checkpoint | Flush buffers to disk. Reduces recovery scan time. |
+| Serializability | Use precedence graph. No cycle = conflict serializable. |
+| OCC Phases | Read Phase → Validation Phase → Write Phase. |
+| Deadlock Conditions | Mutual exclusion, Hold & Wait, No preemption, Circular wait. |
+| Phantom | New rows appear in repeated range query due to concurrent insert. |
+
+---
+
+## 🔚 Conclusion
+Optimistic Concurrency Control is an excellent alternative to locking in low-conflict environments. Its three phases — Read, Validation, and Write — allow transactions to execute freely and only check for correctness at commit time. While it eliminates deadlocks and blocking, it is less suitable for high-conflict environments where frequent rollbacks negate performance benefits.
+</script>
+
+<!-- CDN SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<!-- MAIN SCRIPT -->
+<script>
+/* =============================================
+   MODULES CONFIGURATION
+============================================= */
+const MODULES = [
+  {
+    id: 'm1', code: 'CS701',
+    title: 'DBMS Foundations',
+    desc: 'Architecture, Languages & Core Concepts',
+    difficulty: 'CORE', diffClass: 'core',
+    cardClass: 'c-green', btnClass: 'eg',
+    topics: [
+      { id: 't1', title: '3-Schema Architecture' },
+      { id: 't2', title: 'SQL Languages — DDL, DML & DCL' },
+      { id: 't3', title: 'DBMS vs File System' },
+      { id: 't4', title: 'Data Dictionary' }
+    ]
+  },
+  {
+    id: 'm2', code: 'CS702',
+    title: 'Entity-Relationship Model',
+    desc: 'ER Diagrams, Keys & Data Independence',
+    difficulty: 'INTERMEDIATE', diffClass: 'inter',
+    cardClass: 'c-cyan', btnClass: 'ec',
+    topics: [
+      { id: 't1', title: 'Data Independence' },
+      { id: 't2', title: 'Keys — Super, Candidate, Primary' },
+      { id: 't3', title: 'Entity Sets & Attribute Types' },
+      { id: 't4', title: 'Relationships & Generalization' }
+    ]
+  },
+  {
+    id: 'm3', code: 'CS703',
+    title: 'Relational Model & SQL',
+    desc: 'Algebra, SQL Queries & Normalization',
+    difficulty: 'ADVANCED', diffClass: 'adv',
+    cardClass: 'c-pink', btnClass: 'ep',
+    topics: [
+      { id: 't1', title: 'Query Optimization & Integrity' },
+      { id: 't2', title: 'Relational Algebra & Joins' },
+      { id: 't3', title: 'TRC, Database Models & SQL' },
+      { id: 't4', title: 'Normalization — 1NF to 5NF' }
+    ]
+  },
+  {
+    id: 'm4', code: 'CS704',
+    title: 'Transaction Processing',
+    desc: 'Concurrency, Recovery & Protocols',
+    difficulty: 'EXPERT', diffClass: 'expert',
+    cardClass: 'c-orange', btnClass: 'eo',
+    topics: [
+      { id: 't1', title: 'Serializability & Schedules' },
+      { id: 't2', title: 'Two Phase Locking (2PL)' },
+      { id: 't3', title: 'ACID Properties & Recovery' },
+      { id: 't4', title: 'Optimistic Concurrency Control' }
+    ]
+  }
+];
+
+/* =============================================
+   MATRIX RAIN
+============================================= */
+(function initMatrix() {
+  const canvas = document.getElementById('matrix-canvas');
+  const ctx = canvas.getContext('2d');
+  const chars = 'DBMSQLACIDNFJOINBCNFSELECT01INSERT WHERE GROUP HAVING ORDER BY DELETE UPDATE CREATE DROP ALTER PRIMARY KEY FOREIGN UNIQUE NOT NULL INDEX VIEW TRIGGER PROCEDURE FUNCTION SCHEMA CATALOG RELATION TUPLE ATTRIBUTE ENTITY'.split('');
+  let cols, drops;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols = Math.floor(canvas.width / 18);
+    drops = new Array(cols).fill(1);
+  }
+
+  function draw() {
+    ctx.fillStyle = 'rgba(10,10,10,0.06)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#00ff41';
+    ctx.font = '13px JetBrains Mono, monospace';
+    for (let i = 0; i < drops.length; i++) {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillStyle = Math.random() > 0.92 ? '#00d4ff' : '#00ff41';
+      ctx.fillText(char, i * 18, drops[i] * 18);
+      if (drops[i] * 18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  setInterval(draw, 55);
+})();
+
+/* =============================================
+   BOOT SEQUENCE
+============================================= */
+(function bootSequence() {
+  const lines = document.querySelectorAll('#boot-terminal .tline');
+  lines.forEach((l, i) => {
+    setTimeout(() => l.classList.add('visible'), i * 320 + 400);
+  });
+})();
+
+/* =============================================
+   MARKED.JS CONFIG
+============================================= */
+marked.setOptions({
+  highlight: function(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      return hljs.highlight(code, { language: lang }).value;
+    }
+    return hljs.highlightAuto(code).value;
+  },
+  breaks: true,
+  gfm: true
+});
+
+/* =============================================
+   RENDER MODULE GRID
+============================================= */
+function renderModules() {
+  const grid = document.getElementById('module-grid');
+  grid.innerHTML = '';
+  MODULES.forEach(mod => {
+    const topicItems = mod.topics.map((t, idx) =>
+      `<li onclick="openViewer('${mod.id}','${t.id}');event.stopPropagation()">${t.title}</li>`
+    ).join('');
+
+    const card = document.createElement('div');
+    card.className = `card ${mod.cardClass}`;
+    card.innerHTML = `
+      <div class="card-top">
+        <span class="mod-code">${mod.code}</span>
+        <span class="badge ${mod.diffClass}">${mod.difficulty}</span>
+      </div>
+      <div class="mod-title">${mod.title}</div>
+      <div class="mod-desc">${mod.desc}</div>
+      <ul class="topic-list">${topicItems}</ul>
+      <div class="card-foot">
+        <span class="topic-count"><b>${mod.topics.length}</b> Topics</span>
+        <button class="enter-btn ${mod.btnClass}" onclick="openViewer('${mod.id}','t1')">ENTER ▶</button>
+      </div>`;
+    card.addEventListener('click', () => openViewer(mod.id, 't1'));
+    grid.appendChild(card);
+  });
+
+  // Count-up animation for stats
+  setTimeout(() => animateCountUp('sc-modules', 4, 0), 900);
+  setTimeout(() => animateCountUp('sc-topics', 16, 0), 1000);
+  setTimeout(() => animateCountUp('sc-questions', 32, 0), 1100);
+}
+
+function animateCountUp(id, target, current) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const step = Math.ceil(target / 20);
+  if (current < target) {
+    el.textContent = current;
+    setTimeout(() => animateCountUp(id, target, Math.min(current + step, target)), 40);
+  } else {
+    el.textContent = target;
+  }
+}
+
+/* =============================================
+   NOTE VIEWER
+============================================= */
+let currentModule = null;
+
+function openViewer(moduleId, topicId) {
+  const mod = MODULES.find(m => m.id === moduleId);
+  if (!mod) return;
+  currentModule = mod;
+
+  // Breadcrumb
+  document.getElementById('viewer-bc').innerHTML =
+    `ROOT <span class="bc-sep">›</span> ${mod.code} <span class="bc-sep">›</span> <span class="bc-active">${mod.title}</span>`;
+
+  // Tabs
+  const tabsEl = document.getElementById('viewer-tabs');
+  tabsEl.innerHTML = mod.topics.map(t =>
+    `<button class="vtab ${t.id === topicId ? 'active' : ''}" onclick="switchTab('${mod.id}','${t.id}')">${t.title}</button>`
+  ).join('');
+
+  // Load content
+  loadContent(mod.id, topicId);
+
+  // Open panel
+  document.getElementById('viewer').classList.add('open');
+  document.getElementById('viewer-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function switchTab(moduleId, topicId) {
+  // Update active tab
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  loadContent(moduleId, topicId);
+}
+
+function loadContent(moduleId, topicId) {
+  const contentEl = document.getElementById('viewer-content');
+  const scriptId = `content-${moduleId}-${topicId}`;
+  const scriptEl = document.getElementById(scriptId);
+
+  if (scriptEl) {
+    const mdText = scriptEl.textContent;
+    contentEl.innerHTML = marked.parse(mdText);
+    // Apply highlight.js to any code blocks not already highlighted
+    contentEl.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightElement(block);
+    });
+    // Add md class
+    contentEl.className = 'md';
+    // Scroll to top
+    contentEl.parentElement.scrollTop = 0;
+  } else {
+    contentEl.innerHTML = `<div class="md"><p style="color:var(--text-dim)">Content loading...</p></div>`;
+  }
+}
+
+function closeViewer() {
+  document.getElementById('viewer').classList.remove('open');
+  document.getElementById('viewer-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close with Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeViewer();
+    closeSearch();
+  }
+});
+
+/* =============================================
+   SEARCH
+============================================= */
+// Build search index
+const searchIndex = [];
+MODULES.forEach(mod => {
+  mod.topics.forEach(t => {
+    searchIndex.push({ moduleId: mod.id, topicId: t.id, code: mod.code, title: t.title, modTitle: mod.title });
+  });
+  // Also add module itself
+  searchIndex.push({ moduleId: mod.id, topicId: 't1', code: mod.code, title: mod.title, modTitle: mod.title });
+});
+
+let searchFocusIdx = -1;
+
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('open');
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').innerHTML = '';
+  searchFocusIdx = -1;
+  setTimeout(() => document.getElementById('search-input').focus(), 50);
+}
+
+function closeSearch() {
+  document.getElementById('search-overlay').classList.remove('open');
+}
+
+function handleSearchBackdrop(e) {
+  if (e.target === document.getElementById('search-overlay')) closeSearch();
+}
+
+document.getElementById('search-input').addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  const resultsEl = document.getElementById('search-results');
+  searchFocusIdx = -1;
+
+  if (!q) { resultsEl.innerHTML = ''; return; }
+
+  const results = searchIndex.filter(item =>
+    item.title.toLowerCase().includes(q) ||
+    item.code.toLowerCase().includes(q) ||
+    item.modTitle.toLowerCase().includes(q)
+  ).slice(0, 10);
+
+  if (results.length === 0) {
+    resultsEl.innerHTML = `<div class="s-empty">No results for "${q}"</div>`;
+    return;
+  }
+
+  resultsEl.innerHTML = results.map((r, i) =>
+    `<div class="s-result" data-mid="${r.moduleId}" data-tid="${r.topicId}" onclick="selectResult('${r.moduleId}','${r.topicId}')">
+      <span class="s-mod">${r.code}</span>
+      <span class="s-topic">${r.title}</span>
+    </div>`
+  ).join('');
+});
+
+document.getElementById('search-input').addEventListener('keydown', function(e) {
+  const results = document.querySelectorAll('.s-result');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    searchFocusIdx = Math.min(searchFocusIdx + 1, results.length - 1);
+    results.forEach((r, i) => r.classList.toggle('focused', i === searchFocusIdx));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    searchFocusIdx = Math.max(searchFocusIdx - 1, 0);
+    results.forEach((r, i) => r.classList.toggle('focused', i === searchFocusIdx));
+  } else if (e.key === 'Enter') {
+    if (searchFocusIdx >= 0 && results[searchFocusIdx]) {
+      const r = results[searchFocusIdx];
+      selectResult(r.dataset.mid, r.dataset.tid);
+    }
+  }
+});
+
+function selectResult(moduleId, topicId) {
+  closeSearch();
+  openViewer(moduleId, topicId);
+}
+
+/* =============================================
+   SCROLL PROGRESS BAR
+============================================= */
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progress').style.width = pct + '%';
+});
+
+/* =============================================
+   UPTIME COUNTER
+============================================= */
+(function uptimeCounter() {
+  const start = Date.now();
+  function update() {
+    const elapsed = Math.floor((Date.now() - start) / 1000);
+    const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    const s = String(elapsed % 60).padStart(2, '0');
+    const str = `${m}:${s}`;
+    const el1 = document.getElementById('sc-uptime');
+    const el2 = document.getElementById('uptime-footer');
+    if (el1) el1.textContent = str;
+    if (el2) el2.textContent = str;
+  }
+  setInterval(update, 1000);
+})();
+
+/* =============================================
+   CARD TILT EFFECT (Vanilla JS)
+============================================= */
+function initTilt() {
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const rx = (y - cy) / cy * 5;
+      const ry = (cx - x) / cx * 5;
+      card.style.transform = `translateY(-5px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+}
+
+/* =============================================
+   INIT
+============================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  renderModules();
+  setTimeout(initTilt, 700);
+});
+</script>
+</body>
+</html>
